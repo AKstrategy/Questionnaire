@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета клиента</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --border-hover: #3a4259;
+    --accent: #4e7cff;
+    --accent-dim: rgba(78,124,255,0.12);
+    --accent-glow: rgba(78,124,255,0.25);
+    --text: #e8eaf2;
+    --text-muted: #7b82a0;
+    --text-dim: #454d6a;
+    --success: #2dd4a0;
+    --success-dim: rgba(45,212,160,0.12);
+    --error: #ff5e7a;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(78,124,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(78,124,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .header p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 480px;
+    font-weight: 400;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .progress-steps {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .progress-dot {
+    height: 3px;
+    flex: 1;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.4s;
+  }
+
+  .progress-dot.done { background: var(--accent); }
+  .progress-dot.active { background: var(--accent); opacity: 0.5; }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .progress-label span { color: var(--text-muted); }
+
+  /* Section card */
+  .section {
+    display: none;
+    animation: fadeUp 0.45s ease both;
+  }
+
+  .section.active { display: block; }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(78,124,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+
+  /* Question blocks */
+  .q {
+    margin-bottom: 28px;
+  }
+
+  .q-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .q-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  /* Inputs */
+  input[type=text],
+  input[type=number],
+  input[type=email],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  textarea { resize: vertical; min-height: 88px; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%237b82a0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 44px;
+    cursor: pointer;
+  }
+
+  /* Chip selects */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    color: var(--text-muted);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+    font-weight: 500;
+  }
+
+  .chip:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .chip.selected {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Grid */
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .q-grid { grid-template-columns: 1fr; } }
+
+  /* Conditional reveal */
+  .conditional { 
+    display: none; 
+    margin-top: 12px;
+    padding: 16px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .conditional.show { display: block; }
+
+  /* Table for credit cards */
+  .card-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .card-table th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 600;
+    padding: 0 8px 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-table td { padding: 8px 8px 8px 0; }
+  .card-table input {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  @media (max-width: 560px) {
+    .card-table, .card-table tbody, .card-table tr, .card-table td { display: block; }
+    .card-table thead { display: none; }
+    .card-table tr { margin-bottom: 12px; padding: 12px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); }
+    .card-table td::before { content: attr(data-label); display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .card-table td { padding: 4px 0; }
+  }
+
+  /* Checkbox docs */
+  .doc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 560px) { .doc-grid { grid-template-columns: 1fr; } }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .doc-item:hover { border-color: var(--border-hover); }
+
+  .doc-item.checked {
+    background: var(--success-dim);
+    border-color: var(--success);
+  }
+
+  .doc-item input[type=checkbox] { display: none; }
+
+  .doc-check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border-hover);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+  }
+
+  .doc-item.checked .doc-check {
+    background: var(--success);
+    border-color: var(--success);
+  }
+
+  .doc-check::after {
+    content: '';
+    display: none;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #0d0f14;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+  }
+
+  .doc-item.checked .doc-check::after { display: block; }
+
+  .doc-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .doc-item.checked .doc-label { color: var(--success); }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 44px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    border: none;
+    outline: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 32px;
+  }
+
+  .btn-primary:hover { background: #3d6ef0; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 80px 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .success-screen.show { display: block; }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--success-dim);
+    border: 1px solid var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  /* Error */
+  .error-msg {
+    background: rgba(255,94,122,0.1);
+    border: 1px solid rgba(255,94,122,0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--error);
+    margin-top: 16px;
+    display: none;
+  }
+
+  .error-msg.show { display: block; }
+
+  /* Spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .loading .spinner { display: block; }
+  .loading .btn-text { display: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div class="header">
+    <div class="header-label">Финансовый департамент</div>
+    <h1>Анкета клиента</h1>
+    <p>Заполните все разделы — это позволит нам разработать точный план построения вашего кредитного профиля.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressSteps"></div>
+    <div class="progress-label" id="progressLabel"><span>Раздел 1 из 6</span></div>
+  </div>
+
+  <form id="mainForm" novalidate>
+
+    <!-- SECTION 1: General Info -->
+    <div class="section active" id="s1">
+      <div class="section-tag">01 — Общее</div>
+      <div class="section-title">Общая информация</div>
+      <div class="section-desc">Расскажите о своём бизнесе и целях финансирования.</div>
+
+      <div class="q">
+        <label class="q-label">Полное юридическое название бизнеса</label>
+        <input type="text" name="business_name" placeholder="ABC Logistics LLC" required>
+      </div>
+
+      <div class="q-grid">
+        <div class="q">
+          <label class="q-label">EIN (ИНН бизнеса)</label>
+          <input type="text" name="ein" placeholder="XX-XXXXXXX">
+        </div>
+        <div class="q">
+          <label class="q-label">Тип юридического лица</label>
+          <select name="entity_type">
+            <option value="">Выберите...</option>
+            <option>LLC</option>
+            <option>S-Corp</option>
+            <option>C-Corp</option>
+            <option>Sole Proprietorship</option>
+            <option>Partnership</option>
+            <option>Ещё не зарегистрировано</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Какую сумму финансирования вы хотите получить?</label>
+        <div class="chips" data-name="funding_amount" data-multi="false">
+          <span class="chip" data-val="До $10 000">До $10 000</span>
+          <span class="chip" data-val="$10 000 – $25 000">$10 000 – $25 000</span>
+          <span class="chip" data-val="$25 000 – $50 000">$25 000 – $50 000</span>
+          <span class="chip" data-val="$50 000 – $100 000">$50 000 – $100 000</span>
+          <span class="chip" data-val="$100 000 – $250 000">$100 000 – $250 000</span>
+          <span class="chip" data-val="$250 000+">$250 000+</span>
+          <span class="chip" data-val="Пока не ищу финансирование">Пока не ищу</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">На что вы планируете использовать средства?</label>
+        <div class="chips" data-name="funding_purpose" data-multi="true">
+          <span class="chip" data-val="Оборотный капитал">Оборотный капитал</span>
+          <span class="chip" data-val="Оборудование">Оборудование</span>
+          <span class="chip" data-val="Инвентарь / товар">Инвентарь</span>
+          <span class="chip" data-val="Маркетинг / реклама">Маркетинг</span>
+          <span class="chip" data-val="Найм сотрудников">Найм</span>
+          <span class="chip" data-val="Недвижимость / офис">Недвижимость</span>
+          <span class="chip" data-val="Рефинансирование долга">Рефинансирование</span>
+          <span class="chip" data-val="Только кредитный профиль">Только кредитный профиль</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Вам ранее отказывали в финансировании?</label>
+        <div class="chips" data-name="prev_denial" data-multi="false" data-trigger="denial-detail">
+          <span class="chip" data-val="Да">Да</span>
+          <span class="chip" data-val="Нет">Нет</span>
+        </div>
+        <div class="conditional" id="denial-detail">
+          <label class="q-label" style="font-size:13px;margin-bottom:8px;">Кто отказал, когда и по какой причине?</label>
+          <textarea name="denial_reason" placeholder="Название кредитора, дата, причина отказа..."></textarea>
+        </div>
+      </div>
+
+      <div class="q-grid">
+        <div class="q">
+          <label class="q-label">Телефон бизнеса</label>
+          <div class="chips" data-name="biz_phone" data-multi="false">
+            <span class="chip" data-val="Отдельная бизнес-линия">Отдельная линия</span>
+            <span class="chip" data-val="Личный телефон">Личный телефон</span>
+            <span class="chip" data-val="VoIP / Google Voice">VoIP</span>
+          </div>
+        </div>
+        <div class="q">
+          <label class="q-label">Тип адреса бизнеса</label>
+          <div class="chips" data-name="biz_address_type" data-multi="false">
+            <span class="chip" data-val="Коммерческий офис">Офис</span>
+            <span class="chip" data-val="Домашний адрес">Домашний</span>
+            <span class="chip" data-val="Виртуальный офис">Виртуальный</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Есть ли у вас веб-сайт?</label>
+        <div class="chips" data-name="has_website" data-multi="false">
+          <span class="chip" data-val="Да — действующий">Да, активный</span>
+          <span class="chip" data-val="Да — базовый">Да, базовый</span>
+          <span class="chip" data-val="Нет">Нет</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Revenue -->
+    <div class="section" id="s2">
+      <div class="section-tag">02 — Доходы</div>
+      <div class="section-title">Доходы и выручка</div>
+      <div class="section-desc">Финансовые показатели бизнеса за последние 12 месяцев.</div>
+
+      <div class="q-grid">
+        <div class="q">
+          <label class="q-label">Валовая годовая выручка</label>
+          <div class="q-note">За последние 12 месяцев</div>
+          <input type="text" name="annual_revenue" placeholder="$0">
+        </div>
+        <div class="q">
+          <label class="q-label">Годовой чистый доход</label>
+          <div class="q-note">После всех расходов</div>
+          <input type="text" name="net_income" placeholder="$0">
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Личный годовой доход владельца</label>
+        <div class="q-note">Сумма всех источников: зарплата, дивиденды, выплаты и др.</div>
+        <input type="text" name="owner_income" placeholder="$0">
+      </div>
+
+      <div class="q">
+        <label class="q-label">Поданы ли налоговые декларации бизнеса?</label>
+        <div class="chips" data-name="tax_returns" data-multi="false">
+          <span class="chip" data-val="Да — 2+ года">Да, 2+ года</span>
+          <span class="chip" data-val="Да — 1 год">Да, 1 год</span>
+          <span class="chip" data-val="Первый год — ещё не подавал">Первый год</span>
+          <span class="chip" data-val="Нет / предвыручечный этап">Нет</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Как ведётся бухгалтерия?</label>
+        <div class="chips" data-name="bookkeeping" data-multi="false">
+          <span class="chip" data-val="ПО (QuickBooks и др.)">QuickBooks / ПО</span>
+          <span class="chip" data-val="Бухгалтер">Бухгалтер</span>
+          <span class="chip" data-val="Таблицы / неформально">Таблицы</span>
+          <span class="chip" data-val="Не ведётся">Не ведётся</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Banking -->
+    <div class="section" id="s3">
+      <div class="section-tag">03 — Банк</div>
+      <div class="section-title">Банковские счета</div>
+      <div class="section-desc">Банковская история — ключевой фактор при оценке кредитоспособности.</div>
+
+      <div class="q-grid">
+        <div class="q">
+          <label class="q-label">Основной банк бизнеса</label>
+          <input type="text" name="bank_name" placeholder="Chase, Mercury, Wells Fargo...">
+        </div>
+        <div class="q">
+          <label class="q-label">Как давно открыт счёт?</label>
+          <input type="text" name="bank_age" placeholder="2 года 3 месяца">
+        </div>
+        <div class="q">
+          <label class="q-label">Текущий баланс</label>
+          <input type="text" name="current_balance" placeholder="$0">
+        </div>
+        <div class="q">
+          <label class="q-label">Средний месячный баланс</label>
+          <div class="q-note">Что обычно остаётся на счёте</div>
+          <input type="text" name="avg_balance" placeholder="$0">
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Овердрафты или возвраты платежей (NSF) за 12 месяцев?</label>
+        <div class="chips" data-name="overdrafts" data-multi="false">
+          <span class="chip" data-val="Нет">Нет</span>
+          <span class="chip" data-val="1–2 раза">1–2 раза</span>
+          <span class="chip" data-val="3–5 раз">3–5 раз</span>
+          <span class="chip" data-val="Более 5 раз">Более 5 раз</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Другие бизнес-счета (если есть)</label>
+        <div class="q-note">Название банка, примерный баланс, назначение</div>
+        <textarea name="other_accounts" placeholder="Например: Mercury — $5 000 — резервный счёт..."></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Expenses -->
+    <div class="section" id="s4">
+      <div class="section-tag">04 — Расходы</div>
+      <div class="section-title">Расходы и обязательства</div>
+      <div class="section-desc">Помогает рассчитать реальный денежный поток и покрытие долга.</div>
+
+      <div class="q-grid">
+        <div class="q">
+          <label class="q-label">Общие ежемесячные расходы</label>
+          <input type="text" name="monthly_expenses" placeholder="$0">
+        </div>
+        <div class="q">
+          <label class="q-label">Аренда в месяц (офис / оборудование)</label>
+          <input type="text" name="monthly_rent" placeholder="$0">
+        </div>
+        <div class="q">
+          <label class="q-label">Платежи по кредитам в месяц</label>
+          <input type="text" name="loan_payments" placeholder="$0">
+        </div>
+        <div class="q">
+          <label class="q-label">Количество сотрудников</label>
+          <input type="text" name="employees" placeholder="0 (если только владелец)">
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Существующие кредиты или кредитные линии</label>
+        <div class="q-note">Кредитор, сумма, остаток, ежемесячный платёж</div>
+        <textarea name="existing_loans" placeholder="Например: Chase MCA — $50 000 — остаток $30 000 — $2 500/мес..."></textarea>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Аресты, судебные решения или налоговые задолженности?</label>
+        <div class="chips" data-name="liens" data-multi="false" data-trigger="lien-detail">
+          <span class="chip" data-val="Нет">Нет</span>
+          <span class="chip" data-val="Налоговое удержание">Налоговое удержание</span>
+          <span class="chip" data-val="Судебное решение">Судебное решение</span>
+          <span class="chip" data-val="UCC-файлинг">UCC-файлинг</span>
+          <span class="chip" data-val="Не уверен">Не уверен</span>
+        </div>
+        <div class="conditional" id="lien-detail">
+          <textarea name="lien_detail" placeholder="Опишите подробнее..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Credit Cards -->
+    <div class="section" id="s5">
+      <div class="section-tag">05 — Карты</div>
+      <div class="section-title">Бизнес-кредитные карты</div>
+      <div class="section-desc">Все открытые бизнес-карты и торговые счета.</div>
+
+      <div class="q">
+        <label class="q-label">Есть ли открытые бизнес-кредитные карты?</label>
+        <div class="chips" data-name="has_cards" data-multi="false" data-trigger="cards-detail">
+          <span class="chip" data-val="Да">Да</span>
+          <span class="chip" data-val="Нет">Нет</span>
+        </div>
+      </div>
+
+      <div class="conditional" id="cards-detail">
+        <label class="q-label" style="margin-bottom:14px;display:block;">Перечислите все бизнес-карты:</label>
+        <table class="card-table">
+          <thead>
+            <tr>
+              <th>Эмитент / название карты</th>
+              <th>Кредитный лимит</th>
+              <th>Текущий баланс</th>
+              <th>Отчётность в бюро</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Эмитент"><input type="text" name="card1_issuer" placeholder="Chase Ink Business"></td>
+              <td data-label="Лимит"><input type="text" name="card1_limit" placeholder="$0"></td>
+              <td data-label="Баланс"><input type="text" name="card1_balance" placeholder="$0"></td>
+              <td data-label="Бюро"><select name="card1_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
+            </tr>
+            <tr>
+              <td data-label="Эмитент"><input type="text" name="card2_issuer" placeholder="Amex Blue Business"></td>
+              <td data-label="Лимит"><input type="text" name="card2_limit" placeholder="$0"></td>
+              <td data-label="Баланс"><input type="text" name="card2_balance" placeholder="$0"></td>
+              <td data-label="Бюро"><select name="card2_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
+            </tr>
+            <tr>
+              <td data-label="Эмитент"><input type="text" name="card3_issuer" placeholder="Capital One Spark"></td>
+              <td data-label="Лимит"><input type="text" name="card3_limit" placeholder="$0"></td>
+              <td data-label="Баланс"><input type="text" name="card3_balance" placeholder="$0"></td>
+              <td data-label="Бюро"><select name="card3_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="q" style="margin-top:24px;">
+        <label class="q-label">Торговые счета, отчитывающиеся в бизнес-бюро</label>
+        <div class="q-note">Uline, Quill, Grainger, корпоративные топливные карты и др.</div>
+        <textarea name="trade_accounts" placeholder="Например: Uline net-30, Quill net-30... или «нет»"></textarea>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Есть ли списания, просрочки или коллекции по бизнес-счетам?</label>
+        <div class="chips" data-name="biz_derog" data-multi="false" data-trigger="derog-detail">
+          <span class="chip" data-val="Нет — чистая история">Нет, чисто</span>
+          <span class="chip" data-val="Да">Да</span>
+          <span class="chip" data-val="Не уверен">Не уверен</span>
+        </div>
+        <div class="conditional" id="derog-detail">
+          <textarea name="derog_detail" placeholder="Кредитор, сумма, статус, давность..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: Documents -->
+    <div class="section" id="s6">
+      <div class="section-tag">06 — Документы</div>
+      <div class="section-title">Необходимые документы</div>
+      <div class="section-desc">Отметьте документы, которые у вас уже есть и готовы к предоставлению.</div>
+
+      <div class="doc-grid">
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_articles">
+          <div class="doc-check"></div>
+          <span class="doc-label">Устав / операционное соглашение LLC</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_ein">
+          <div class="doc-check"></div>
+          <span class="doc-label">Письмо-подтверждение EIN (CP575)</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_bank6">
+          <div class="doc-check"></div>
+          <span class="doc-label">Банковские выписки за 6 месяцев</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_tax2">
+          <div class="doc-check"></div>
+          <span class="doc-label">Налоговые декларации бизнеса (2 года)</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_personal_tax">
+          <div class="doc-check"></div>
+          <span class="doc-label">Личные налоговые декларации владельца</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_pl">
+          <div class="doc-check"></div>
+          <span class="doc-label">Отчёт о прибылях и убытках (P&L)</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_balance">
+          <div class="doc-check"></div>
+          <span class="doc-label">Балансовый отчёт</span>
+        </label>
+        <label class="doc-item" onclick="toggleDoc(this)">
+          <input type="checkbox" name="doc_voided_check">
+          <div class="doc-check"></div>
+          <span class="doc-label">Аннулированный бизнес-чек</span>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="q">
+        <label class="q-label">Дополнительная информация</label>
+        <div class="q-note">Любые важные детали, предстоящие события, вопросы</div>
+        <textarea name="notes" placeholder="Например: сезонный рост выручки в Q4, ожидается крупный контракт, недавно наняли сотрудников..."></textarea>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Как вы о нас узнали?</label>
+        <select name="referral_source">
+          <option value="">Выберите...</option>
+          <option>Рекомендация знакомого</option>
+          <option>Социальные сети</option>
+          <option>Поиск Google</option>
+          <option>ISO / брокер-партнёр</option>
+          <option>Другое</option>
+        </select>
+      </div>
+
+      <div class="error-msg" id="errorMsg">Произошла ошибка при отправке. Попробуйте ещё раз.</div>
+    </div>
+
+  </form>
+
+  <!-- Nav -->
+  <div class="nav" id="navBar">
+    <button class="btn btn-ghost" id="btnBack" onclick="go(-1)" style="visibility:hidden">← Назад</button>
+    <button class="btn btn-primary" id="btnNext" onclick="go(1)">
+      <span class="btn-text">Далее →</span>
+      <div class="spinner"></div>
+    </button>
+  </div>
+
+  <!-- Success -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Анкета отправлена!</h2>
+    <p>Ваши данные получены. Мы свяжемся с вами в ближайшее время для обсуждения плана.</p>
+  </div>
+
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────
+// Paste your Google Apps Script Web App URL here after deployment:
+const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+// ──────────────────────────────────────────────────────
+
+const TOTAL = 6;
+let current = 1;
+
+// Init progress dots
+const stepsEl = document.getElementById('progressSteps');
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'progress-dot' + (i === 1 ? ' active' : '');
+  d.id = 'dot' + i;
+  stepsEl.appendChild(d);
+}
+
+function updateProgress() {
+  document.getElementById('progressLabel').innerHTML =
+    `<span>Раздел ${current} из ${TOTAL}</span>`;
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.getElementById('dot' + i);
+    d.className = 'progress-dot' + (i < current ? ' done' : i === current ? ' active' : '');
+  }
+  document.getElementById('btnBack').style.visibility = current > 1 ? 'visible' : 'hidden';
+  const btn = document.getElementById('btnNext');
+  btn.innerHTML = current < TOTAL
+    ? '<span class="btn-text">Далее →</span><div class="spinner"></div>'
+    : '<span class="btn-text">Отправить анкету ✓</span><div class="spinner"></div>';
+}
+
+function go(dir) {
+  if (dir === 1 && current === TOTAL) {
+    submitForm();
+    return;
+  }
+  document.getElementById('s' + current).classList.remove('active');
+  current = Math.max(1, Math.min(TOTAL, current + dir));
+  document.getElementById('s' + current).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Chip toggle
+document.querySelectorAll('.chips').forEach(group => {
+  const multi = group.dataset.multi === 'true';
+  const triggerId = group.dataset.trigger;
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (!multi) group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.toggle('selected');
+      if (triggerId) {
+        const el = document.getElementById(triggerId);
+        const anySelected = group.querySelector('.chip.selected');
+        const selectedVal = anySelected ? anySelected.dataset.val : '';
+        if (triggerId === 'denial-detail') {
+          el.classList.toggle('show', selectedVal === 'Да');
+        } else if (triggerId === 'cards-detail') {
+          el.classList.toggle('show', selectedVal === 'Да');
+        } else if (triggerId === 'derog-detail') {
+          el.classList.toggle('show', selectedVal === 'Да');
+        } else if (triggerId === 'lien-detail') {
+          const bad = ['Налоговое удержание','Судебное решение','UCC-файлинг'];
+          el.classList.toggle('show', bad.includes(selectedVal));
+        }
+      }
+    });
+  });
+});
+
+// Doc checkboxes
+function toggleDoc(label) {
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  label.classList.toggle('checked', cb.checked);
+  event.preventDefault();
+}
+
+// Collect all form data
+function collectData() {
+  const data = { timestamp: new Date().toLocaleString('ru-RU') };
+
+  // Regular inputs
+  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+    if (el.type === 'checkbox') {
+      data[el.name] = el.checked ? 'Да' : 'Нет';
+    } else {
+      data[el.name] = el.value;
+    }
+  });
+
+  // Chip selections
+  document.querySelectorAll('.chips[data-name]').forEach(group => {
+    const name = group.dataset.name;
+    const selected = [...group.querySelectorAll('.chip.selected')].map(c => c.dataset.val);
+    data[name] = selected.join(', ') || '—';
+  });
+
+  return data;
+}
+
+async function submitForm() {
+  const btn = document.getElementById('btnNext');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  document.getElementById('errorMsg').classList.remove('show');
+
+  const data = collectData();
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    document.getElementById('mainForm').style.display = 'none';
+    document.getElementById('navBar').style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    document.getElementById('errorMsg').classList.add('show');
+  }
+}
+
+updateProgress();
+</script>
+</body>
+</html>
