@@ -3,896 +3,570 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Анкета клиента</title>
+<title>AK Strategy — Анкета клиента</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #13161d;
-    --surface2: #1a1e28;
-    --border: #252a38;
-    --border-hover: #3a4259;
-    --accent: #4e7cff;
-    --accent-dim: rgba(78,124,255,0.12);
-    --accent-glow: rgba(78,124,255,0.25);
-    --text: #e8eaf2;
-    --text-muted: #7b82a0;
-    --text-dim: #454d6a;
-    --success: #2dd4a0;
-    --success-dim: rgba(45,212,160,0.12);
-    --error: #ff5e7a;
-    --radius: 10px;
-    --radius-lg: 16px;
-  }
+:root{--bg:#0d0f14;--surface:#13161d;--surface2:#1a1e28;--border:#252a38;--border-hover:#3a4259;--accent:#4e7cff;--accent-dim:rgba(78,124,255,0.12);--accent-glow:rgba(78,124,255,0.25);--text:#e8eaf2;--text-muted:#7b82a0;--text-dim:#454d6a;--success:#2dd4a0;--success-dim:rgba(45,212,160,0.12);--error:#ff5e7a;--warn:#f5a623;--radius:10px;--radius-lg:16px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(78,124,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(78,124,255,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+.page-wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:48px 24px 100px;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.header{margin-bottom:48px;animation:fadeUp 0.6s ease both;}
+.logo-wrap{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+.logo-img{width:56px;height:56px;object-fit:contain;border-radius:8px;}
+.logo-text{display:flex;flex-direction:column;}
+.logo-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:0.04em;}
+.logo-sub{font-size:11px;color:var(--text-dim);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;}
+.header-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px;}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,44px);font-weight:400;color:var(--text);line-height:1.15;margin-bottom:12px;}
+.header p{color:var(--text-muted);font-size:14px;max-width:480px;font-weight:400;}
 
-  body {
-    font-family: 'Manrope', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
+/* PROGRESS */
+.progress-wrap{margin-bottom:44px;animation:fadeUp 0.6s 0.1s ease both;}
+.progress-steps{display:flex;gap:6px;margin-bottom:10px;}
+.progress-dot{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background 0.4s;}
+.progress-dot.done{background:var(--accent);}
+.progress-dot.active{background:var(--accent);opacity:0.5;}
+.progress-label{font-size:12px;color:var(--text-dim);font-weight:500;}
+.progress-label span{color:var(--text-muted);}
 
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(78,124,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(78,124,255,0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* SECTIONS */
+.section{display:none;animation:fadeUp 0.45s ease both;}
+.section.active{display:block;}
+.section-tag{display:inline-flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid rgba(78,124,255,0.2);border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+.section-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--text);margin-bottom:4px;}
+.section-desc{font-size:13px;color:var(--text-muted);margin-bottom:32px;font-weight:400;}
 
-  .page-wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 60px 24px 100px;
-  }
+/* QUESTION BLOCKS */
+.q{margin-bottom:24px;}
+.q-label{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.req{color:var(--error);font-size:12px;line-height:1;}
+.q-hint{font-size:12px;color:var(--text-dim);margin-bottom:8px;font-style:italic;line-height:1.4;}
+.q-error{font-size:12px;color:var(--error);margin-top:5px;display:none;}
+.q.has-error .q-error{display:block;}
+.q.has-error input,.q.has-error textarea,.q.has-error select{border-color:var(--error) !important;}
+.q.has-error .chip-group{outline:1px solid var(--error);border-radius:var(--radius);padding:6px;}
 
-  /* Header */
-  .header {
-    margin-bottom: 56px;
-    animation: fadeUp 0.6s ease both;
-  }
+/* INPUTS */
+input[type=text],input[type=number],input[type=email],input[type=tel],textarea,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 15px;font-size:14px;font-family:'Manrope',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-appearance:none;}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+textarea{resize:vertical;min-height:84px;}
+select{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%237b82a0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;padding-right:42px;cursor:pointer;}
+::placeholder{color:var(--text-dim);}
 
-  .header-label {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
+/* GRID */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.q-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:560px){.q-grid,.q-grid-3{grid-template-columns:1fr;}}
 
-  .header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 5vw, 48px);
-    font-weight: 400;
-    color: var(--text);
-    line-height: 1.15;
-    margin-bottom: 16px;
-  }
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:8px 16px;border:1px solid var(--border);border-radius:20px;font-size:13px;font-family:'Manrope',sans-serif;color:var(--text-muted);background:var(--surface);cursor:pointer;transition:all 0.18s;user-select:none;font-weight:500;}
+.chip:hover{border-color:var(--border-hover);color:var(--text);}
+.chip.selected{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:600;}
 
-  .header p {
-    color: var(--text-muted);
-    font-size: 15px;
-    max-width: 480px;
-    font-weight: 400;
-  }
+/* CONDITIONAL */
+.conditional{display:none;margin-top:12px;padding:16px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);animation:fadeUp 0.3s ease both;}
+.conditional.show{display:block;}
 
-  /* Progress */
-  .progress-wrap {
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
+/* DOC CHECKBOXES */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:560px){.doc-grid{grid-template-columns:1fr;}}
+.doc-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.18s;user-select:none;}
+.doc-item:hover{border-color:var(--border-hover);}
+.doc-item.checked{background:var(--success-dim);border-color:var(--success);}
+.doc-check{width:18px;height:18px;border:1.5px solid var(--border-hover);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
+.doc-item.checked .doc-check{background:var(--success);border-color:var(--success);}
+.doc-check-inner{display:none;width:5px;height:9px;border:2px solid #0d0f14;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
+.doc-item.checked .doc-check-inner{display:block;}
+.doc-label{font-size:13px;color:var(--text-muted);font-weight:500;line-height:1.4;}
+.doc-item.checked .doc-label{color:var(--success);}
 
-  .progress-steps {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
+/* CREDIT CARD ROWS */
+.card-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.card-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;animation:fadeUp 0.3s ease both;}
+@media(max-width:620px){.card-row{grid-template-columns:1fr 1fr;}.card-row .card-remove{grid-column:1/-1;justify-self:end;}}
+.card-row-label{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);font-weight:600;margin-bottom:5px;}
+.card-remove{padding:8px 12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:12px;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.card-remove:hover{border-color:var(--error);color:var(--error);}
+.add-card-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:transparent;border:1px dashed var(--border-hover);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.18s;margin-top:8px;}
+.add-card-btn:hover{border-color:var(--accent);color:var(--accent);}
+.add-card-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.card-count-note{font-size:11px;color:var(--text-dim);margin-top:6px;}
 
-  .progress-dot {
-    height: 3px;
-    flex: 1;
-    border-radius: 2px;
-    background: var(--border);
-    transition: background 0.4s;
-  }
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-family:'Manrope',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;border:none;outline:none;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+.btn-ghost:hover{border-color:var(--border-hover);color:var(--text);}
+.btn-primary{background:var(--accent);color:#fff;padding:12px 32px;}
+.btn-primary:hover{background:#3d6ef0;transform:translateY(-1px);}
+.btn-primary:active{transform:translateY(0);}
+.btn-primary:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+.loading .spinner{display:block;}
+.loading .btn-text{display:none;}
 
-  .progress-dot.done { background: var(--accent); }
-  .progress-dot.active { background: var(--accent); opacity: 0.5; }
+/* FORM ERROR BANNER */
+.form-error{background:rgba(255,94,122,0.1);border:1px solid rgba(255,94,122,0.3);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--error);margin-top:14px;display:none;}
+.form-error.show{display:block;}
 
-  .progress-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    font-weight: 500;
-  }
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:80px 24px;animation:fadeUp 0.6s ease both;}
+.success-screen.show{display:block;}
+.success-icon{width:72px;height:72px;background:var(--success-dim);border:1px solid var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;}
+.success-screen h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:12px;}
+.success-screen p{color:var(--text-muted);font-size:15px;max-width:360px;margin:0 auto;}
 
-  .progress-label span { color: var(--text-muted); }
+.divider{height:1px;background:var(--border);margin:24px 0;}
 
-  /* Section card */
-  .section {
-    display: none;
-    animation: fadeUp 0.45s ease both;
-  }
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+/* LANG TOGGLE */
+.lang-toggle{position:fixed;top:20px;right:24px;z-index:100;display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px;gap:2px;}
+.lang-btn{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'Manrope',sans-serif;transition:all 0.18s;}
+.lang-btn.active{background:var(--accent);color:#fff;}
 
-  .section.active { display: block; }
+/* PHONE INPUT WRAPPER */
+.phone-wrap{display:flex;align-items:stretch;gap:0;}
+.phone-prefix{display:flex;align-items:center;padding:0 12px;background:var(--surface2);border:1px solid var(--border);border-right:none;border-radius:var(--radius) 0 0 var(--radius);font-size:14px;font-weight:600;color:var(--text-muted);white-space:nowrap;user-select:none;}
+.phone-wrap input{border-radius:0 var(--radius) var(--radius) 0 !important;flex:1;}
 
-  .section-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--accent-dim);
-    border: 1px solid rgba(78,124,255,0.2);
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .section-desc {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 36px;
-    font-weight: 400;
-  }
-
-  /* Question blocks */
-  .q {
-    margin-bottom: 28px;
-  }
-
-  .q-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .q-note {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-bottom: 10px;
-    font-style: italic;
-  }
-
-  /* Inputs */
-  input[type=text],
-  input[type=number],
-  input[type=email],
-  textarea,
-  select {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 14px;
-    font-family: 'Manrope', sans-serif;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-  }
-
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-  }
-
-  textarea { resize: vertical; min-height: 88px; }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%237b82a0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 44px;
-    cursor: pointer;
-  }
-
-  /* Chip selects */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .chip {
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 13px;
-    font-family: 'Manrope', sans-serif;
-    color: var(--text-muted);
-    background: var(--surface);
-    cursor: pointer;
-    transition: all 0.18s;
-    user-select: none;
-    font-weight: 500;
-  }
-
-  .chip:hover {
-    border-color: var(--border-hover);
-    color: var(--text);
-  }
-
-  .chip.selected {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  /* Grid */
-  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 560px) { .q-grid { grid-template-columns: 1fr; } }
-
-  /* Conditional reveal */
-  .conditional { 
-    display: none; 
-    margin-top: 12px;
-    padding: 16px;
-    background: var(--surface2);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-  }
-  .conditional.show { display: block; }
-
-  /* Table for credit cards */
-  .card-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-  .card-table th {
-    text-align: left;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    font-weight: 600;
-    padding: 0 8px 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .card-table td { padding: 8px 8px 8px 0; }
-  .card-table input {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-  @media (max-width: 560px) {
-    .card-table, .card-table tbody, .card-table tr, .card-table td { display: block; }
-    .card-table thead { display: none; }
-    .card-table tr { margin-bottom: 12px; padding: 12px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); }
-    .card-table td::before { content: attr(data-label); display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .card-table td { padding: 4px 0; }
-  }
-
-  /* Checkbox docs */
-  .doc-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  @media (max-width: 560px) { .doc-grid { grid-template-columns: 1fr; } }
-
-  .doc-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-
-  .doc-item:hover { border-color: var(--border-hover); }
-
-  .doc-item.checked {
-    background: var(--success-dim);
-    border-color: var(--success);
-  }
-
-  .doc-item input[type=checkbox] { display: none; }
-
-  .doc-check {
-    width: 18px;
-    height: 18px;
-    border: 1.5px solid var(--border-hover);
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.18s;
-  }
-
-  .doc-item.checked .doc-check {
-    background: var(--success);
-    border-color: var(--success);
-  }
-
-  .doc-check::after {
-    content: '';
-    display: none;
-    width: 5px;
-    height: 9px;
-    border: 2px solid #0d0f14;
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg) translateY(-1px);
-  }
-
-  .doc-item.checked .doc-check::after { display: block; }
-
-  .doc-label {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .doc-item.checked .doc-label { color: var(--success); }
-
-  /* Nav */
-  .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 44px;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.18s;
-    border: none;
-    outline: none;
-  }
-
-  .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
-
-  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    padding: 12px 32px;
-  }
-
-  .btn-primary:hover { background: #3d6ef0; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Success screen */
-  .success-screen {
-    display: none;
-    text-align: center;
-    padding: 80px 24px;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .success-screen.show { display: block; }
-
-  .success-icon {
-    width: 72px;
-    height: 72px;
-    background: var(--success-dim);
-    border: 1px solid var(--success);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 28px;
-  }
-
-  .success-screen h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px;
-    font-weight: 400;
-    margin-bottom: 12px;
-  }
-
-  .success-screen p {
-    color: var(--text-muted);
-    font-size: 15px;
-    max-width: 360px;
-    margin: 0 auto;
-  }
-
-  /* Error */
-  .error-msg {
-    background: rgba(255,94,122,0.1);
-    border: 1px solid rgba(255,94,122,0.3);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--error);
-    margin-top: 16px;
-    display: none;
-  }
-
-  .error-msg.show { display: block; }
-
-  /* Spinner */
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
-  }
-  .loading .spinner { display: block; }
-  .loading .btn-text { display: none; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Divider */
-  .divider { height: 1px; background: var(--border); margin: 28px 0; }
 </style>
 </head>
 <body>
 
-<div class="page-wrap">
-
-  <div class="header">
-    <div class="header-label">Финансовый департамент</div>
-    <h1>Анкета клиента</h1>
-    <p>Заполните все разделы — это позволит нам разработать точный план построения вашего кредитного профиля.</p>
-  </div>
-
-  <div class="progress-wrap">
-    <div class="progress-steps" id="progressSteps"></div>
-    <div class="progress-label" id="progressLabel"><span>Раздел 1 из 6</span></div>
-  </div>
-
-  <form id="mainForm" novalidate>
-
-    <!-- SECTION 1: General Info -->
-    <div class="section active" id="s1">
-      <div class="section-tag">01 — Общее</div>
-      <div class="section-title">Общая информация</div>
-      <div class="section-desc">Расскажите о своём бизнесе и целях финансирования.</div>
-
-      <div class="q">
-        <label class="q-label">Полное юридическое название бизнеса</label>
-        <input type="text" name="business_name" placeholder="ABC Logistics LLC" required>
-      </div>
-
-      <div class="q-grid">
-        <div class="q">
-          <label class="q-label">EIN (ИНН бизнеса)</label>
-          <input type="text" name="ein" placeholder="XX-XXXXXXX">
-        </div>
-        <div class="q">
-          <label class="q-label">Тип юридического лица</label>
-          <select name="entity_type">
-            <option value="">Выберите...</option>
-            <option>LLC</option>
-            <option>S-Corp</option>
-            <option>C-Corp</option>
-            <option>Sole Proprietorship</option>
-            <option>Partnership</option>
-            <option>Ещё не зарегистрировано</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Какую сумму финансирования вы хотите получить?</label>
-        <div class="chips" data-name="funding_amount" data-multi="false">
-          <span class="chip" data-val="До $10 000">До $10 000</span>
-          <span class="chip" data-val="$10 000 – $25 000">$10 000 – $25 000</span>
-          <span class="chip" data-val="$25 000 – $50 000">$25 000 – $50 000</span>
-          <span class="chip" data-val="$50 000 – $100 000">$50 000 – $100 000</span>
-          <span class="chip" data-val="$100 000 – $250 000">$100 000 – $250 000</span>
-          <span class="chip" data-val="$250 000+">$250 000+</span>
-          <span class="chip" data-val="Пока не ищу финансирование">Пока не ищу</span>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">На что вы планируете использовать средства?</label>
-        <div class="chips" data-name="funding_purpose" data-multi="true">
-          <span class="chip" data-val="Оборотный капитал">Оборотный капитал</span>
-          <span class="chip" data-val="Оборудование">Оборудование</span>
-          <span class="chip" data-val="Инвентарь / товар">Инвентарь</span>
-          <span class="chip" data-val="Маркетинг / реклама">Маркетинг</span>
-          <span class="chip" data-val="Найм сотрудников">Найм</span>
-          <span class="chip" data-val="Недвижимость / офис">Недвижимость</span>
-          <span class="chip" data-val="Рефинансирование долга">Рефинансирование</span>
-          <span class="chip" data-val="Только кредитный профиль">Только кредитный профиль</span>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Вам ранее отказывали в финансировании?</label>
-        <div class="chips" data-name="prev_denial" data-multi="false" data-trigger="denial-detail">
-          <span class="chip" data-val="Да">Да</span>
-          <span class="chip" data-val="Нет">Нет</span>
-        </div>
-        <div class="conditional" id="denial-detail">
-          <label class="q-label" style="font-size:13px;margin-bottom:8px;">Кто отказал, когда и по какой причине?</label>
-          <textarea name="denial_reason" placeholder="Название кредитора, дата, причина отказа..."></textarea>
-        </div>
-      </div>
-
-      <div class="q-grid">
-        <div class="q">
-          <label class="q-label">Телефон бизнеса</label>
-          <div class="chips" data-name="biz_phone" data-multi="false">
-            <span class="chip" data-val="Отдельная бизнес-линия">Отдельная линия</span>
-            <span class="chip" data-val="Личный телефон">Личный телефон</span>
-            <span class="chip" data-val="VoIP / Google Voice">VoIP</span>
-          </div>
-        </div>
-        <div class="q">
-          <label class="q-label">Тип адреса бизнеса</label>
-          <div class="chips" data-name="biz_address_type" data-multi="false">
-            <span class="chip" data-val="Коммерческий офис">Офис</span>
-            <span class="chip" data-val="Домашний адрес">Домашний</span>
-            <span class="chip" data-val="Виртуальный офис">Виртуальный</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Есть ли у вас веб-сайт?</label>
-        <div class="chips" data-name="has_website" data-multi="false">
-          <span class="chip" data-val="Да — действующий">Да, активный</span>
-          <span class="chip" data-val="Да — базовый">Да, базовый</span>
-          <span class="chip" data-val="Нет">Нет</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 2: Revenue -->
-    <div class="section" id="s2">
-      <div class="section-tag">02 — Доходы</div>
-      <div class="section-title">Доходы и выручка</div>
-      <div class="section-desc">Финансовые показатели бизнеса за последние 12 месяцев.</div>
-
-      <div class="q-grid">
-        <div class="q">
-          <label class="q-label">Валовая годовая выручка</label>
-          <div class="q-note">За последние 12 месяцев</div>
-          <input type="text" name="annual_revenue" placeholder="$0">
-        </div>
-        <div class="q">
-          <label class="q-label">Годовой чистый доход</label>
-          <div class="q-note">После всех расходов</div>
-          <input type="text" name="net_income" placeholder="$0">
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Личный годовой доход владельца</label>
-        <div class="q-note">Сумма всех источников: зарплата, дивиденды, выплаты и др.</div>
-        <input type="text" name="owner_income" placeholder="$0">
-      </div>
-
-      <div class="q">
-        <label class="q-label">Поданы ли налоговые декларации бизнеса?</label>
-        <div class="chips" data-name="tax_returns" data-multi="false">
-          <span class="chip" data-val="Да — 2+ года">Да, 2+ года</span>
-          <span class="chip" data-val="Да — 1 год">Да, 1 год</span>
-          <span class="chip" data-val="Первый год — ещё не подавал">Первый год</span>
-          <span class="chip" data-val="Нет / предвыручечный этап">Нет</span>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Как ведётся бухгалтерия?</label>
-        <div class="chips" data-name="bookkeeping" data-multi="false">
-          <span class="chip" data-val="ПО (QuickBooks и др.)">QuickBooks / ПО</span>
-          <span class="chip" data-val="Бухгалтер">Бухгалтер</span>
-          <span class="chip" data-val="Таблицы / неформально">Таблицы</span>
-          <span class="chip" data-val="Не ведётся">Не ведётся</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 3: Banking -->
-    <div class="section" id="s3">
-      <div class="section-tag">03 — Банк</div>
-      <div class="section-title">Банковские счета</div>
-      <div class="section-desc">Банковская история — ключевой фактор при оценке кредитоспособности.</div>
-
-      <div class="q-grid">
-        <div class="q">
-          <label class="q-label">Основной банк бизнеса</label>
-          <input type="text" name="bank_name" placeholder="Chase, Mercury, Wells Fargo...">
-        </div>
-        <div class="q">
-          <label class="q-label">Как давно открыт счёт?</label>
-          <input type="text" name="bank_age" placeholder="2 года 3 месяца">
-        </div>
-        <div class="q">
-          <label class="q-label">Текущий баланс</label>
-          <input type="text" name="current_balance" placeholder="$0">
-        </div>
-        <div class="q">
-          <label class="q-label">Средний месячный баланс</label>
-          <div class="q-note">Что обычно остаётся на счёте</div>
-          <input type="text" name="avg_balance" placeholder="$0">
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Овердрафты или возвраты платежей (NSF) за 12 месяцев?</label>
-        <div class="chips" data-name="overdrafts" data-multi="false">
-          <span class="chip" data-val="Нет">Нет</span>
-          <span class="chip" data-val="1–2 раза">1–2 раза</span>
-          <span class="chip" data-val="3–5 раз">3–5 раз</span>
-          <span class="chip" data-val="Более 5 раз">Более 5 раз</span>
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Другие бизнес-счета (если есть)</label>
-        <div class="q-note">Название банка, примерный баланс, назначение</div>
-        <textarea name="other_accounts" placeholder="Например: Mercury — $5 000 — резервный счёт..."></textarea>
-      </div>
-    </div>
-
-    <!-- SECTION 4: Expenses -->
-    <div class="section" id="s4">
-      <div class="section-tag">04 — Расходы</div>
-      <div class="section-title">Расходы и обязательства</div>
-      <div class="section-desc">Помогает рассчитать реальный денежный поток и покрытие долга.</div>
-
-      <div class="q-grid">
-        <div class="q">
-          <label class="q-label">Общие ежемесячные расходы</label>
-          <input type="text" name="monthly_expenses" placeholder="$0">
-        </div>
-        <div class="q">
-          <label class="q-label">Аренда в месяц (офис / оборудование)</label>
-          <input type="text" name="monthly_rent" placeholder="$0">
-        </div>
-        <div class="q">
-          <label class="q-label">Платежи по кредитам в месяц</label>
-          <input type="text" name="loan_payments" placeholder="$0">
-        </div>
-        <div class="q">
-          <label class="q-label">Количество сотрудников</label>
-          <input type="text" name="employees" placeholder="0 (если только владелец)">
-        </div>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Существующие кредиты или кредитные линии</label>
-        <div class="q-note">Кредитор, сумма, остаток, ежемесячный платёж</div>
-        <textarea name="existing_loans" placeholder="Например: Chase MCA — $50 000 — остаток $30 000 — $2 500/мес..."></textarea>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Аресты, судебные решения или налоговые задолженности?</label>
-        <div class="chips" data-name="liens" data-multi="false" data-trigger="lien-detail">
-          <span class="chip" data-val="Нет">Нет</span>
-          <span class="chip" data-val="Налоговое удержание">Налоговое удержание</span>
-          <span class="chip" data-val="Судебное решение">Судебное решение</span>
-          <span class="chip" data-val="UCC-файлинг">UCC-файлинг</span>
-          <span class="chip" data-val="Не уверен">Не уверен</span>
-        </div>
-        <div class="conditional" id="lien-detail">
-          <textarea name="lien_detail" placeholder="Опишите подробнее..."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 5: Credit Cards -->
-    <div class="section" id="s5">
-      <div class="section-tag">05 — Карты</div>
-      <div class="section-title">Бизнес-кредитные карты</div>
-      <div class="section-desc">Все открытые бизнес-карты и торговые счета.</div>
-
-      <div class="q">
-        <label class="q-label">Есть ли открытые бизнес-кредитные карты?</label>
-        <div class="chips" data-name="has_cards" data-multi="false" data-trigger="cards-detail">
-          <span class="chip" data-val="Да">Да</span>
-          <span class="chip" data-val="Нет">Нет</span>
-        </div>
-      </div>
-
-      <div class="conditional" id="cards-detail">
-        <label class="q-label" style="margin-bottom:14px;display:block;">Перечислите все бизнес-карты:</label>
-        <table class="card-table">
-          <thead>
-            <tr>
-              <th>Эмитент / название карты</th>
-              <th>Кредитный лимит</th>
-              <th>Текущий баланс</th>
-              <th>Отчётность в бюро</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td data-label="Эмитент"><input type="text" name="card1_issuer" placeholder="Chase Ink Business"></td>
-              <td data-label="Лимит"><input type="text" name="card1_limit" placeholder="$0"></td>
-              <td data-label="Баланс"><input type="text" name="card1_balance" placeholder="$0"></td>
-              <td data-label="Бюро"><select name="card1_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
-            </tr>
-            <tr>
-              <td data-label="Эмитент"><input type="text" name="card2_issuer" placeholder="Amex Blue Business"></td>
-              <td data-label="Лимит"><input type="text" name="card2_limit" placeholder="$0"></td>
-              <td data-label="Баланс"><input type="text" name="card2_balance" placeholder="$0"></td>
-              <td data-label="Бюро"><select name="card2_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
-            </tr>
-            <tr>
-              <td data-label="Эмитент"><input type="text" name="card3_issuer" placeholder="Capital One Spark"></td>
-              <td data-label="Лимит"><input type="text" name="card3_limit" placeholder="$0"></td>
-              <td data-label="Баланс"><input type="text" name="card3_balance" placeholder="$0"></td>
-              <td data-label="Бюро"><select name="card3_bureau"><option value="">...</option><option>Бизнес-бюро</option><option>Личные бюро</option><option>Оба</option><option>Не знаю</option></select></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="q" style="margin-top:24px;">
-        <label class="q-label">Торговые счета, отчитывающиеся в бизнес-бюро</label>
-        <div class="q-note">Uline, Quill, Grainger, корпоративные топливные карты и др.</div>
-        <textarea name="trade_accounts" placeholder="Например: Uline net-30, Quill net-30... или «нет»"></textarea>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Есть ли списания, просрочки или коллекции по бизнес-счетам?</label>
-        <div class="chips" data-name="biz_derog" data-multi="false" data-trigger="derog-detail">
-          <span class="chip" data-val="Нет — чистая история">Нет, чисто</span>
-          <span class="chip" data-val="Да">Да</span>
-          <span class="chip" data-val="Не уверен">Не уверен</span>
-        </div>
-        <div class="conditional" id="derog-detail">
-          <textarea name="derog_detail" placeholder="Кредитор, сумма, статус, давность..."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 6: Documents -->
-    <div class="section" id="s6">
-      <div class="section-tag">06 — Документы</div>
-      <div class="section-title">Необходимые документы</div>
-      <div class="section-desc">Отметьте документы, которые у вас уже есть и готовы к предоставлению.</div>
-
-      <div class="doc-grid">
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_articles">
-          <div class="doc-check"></div>
-          <span class="doc-label">Устав / операционное соглашение LLC</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_ein">
-          <div class="doc-check"></div>
-          <span class="doc-label">Письмо-подтверждение EIN (CP575)</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_bank6">
-          <div class="doc-check"></div>
-          <span class="doc-label">Банковские выписки за 6 месяцев</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_tax2">
-          <div class="doc-check"></div>
-          <span class="doc-label">Налоговые декларации бизнеса (2 года)</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_personal_tax">
-          <div class="doc-check"></div>
-          <span class="doc-label">Личные налоговые декларации владельца</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_pl">
-          <div class="doc-check"></div>
-          <span class="doc-label">Отчёт о прибылях и убытках (P&L)</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_balance">
-          <div class="doc-check"></div>
-          <span class="doc-label">Балансовый отчёт</span>
-        </label>
-        <label class="doc-item" onclick="toggleDoc(this)">
-          <input type="checkbox" name="doc_voided_check">
-          <div class="doc-check"></div>
-          <span class="doc-label">Аннулированный бизнес-чек</span>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="q">
-        <label class="q-label">Дополнительная информация</label>
-        <div class="q-note">Любые важные детали, предстоящие события, вопросы</div>
-        <textarea name="notes" placeholder="Например: сезонный рост выручки в Q4, ожидается крупный контракт, недавно наняли сотрудников..."></textarea>
-      </div>
-
-      <div class="q">
-        <label class="q-label">Как вы о нас узнали?</label>
-        <select name="referral_source">
-          <option value="">Выберите...</option>
-          <option>Рекомендация знакомого</option>
-          <option>Социальные сети</option>
-          <option>Поиск Google</option>
-          <option>ISO / брокер-партнёр</option>
-          <option>Другое</option>
-        </select>
-      </div>
-
-      <div class="error-msg" id="errorMsg">Произошла ошибка при отправке. Попробуйте ещё раз.</div>
-    </div>
-
-  </form>
-
-  <!-- Nav -->
-  <div class="nav" id="navBar">
-    <button class="btn btn-ghost" id="btnBack" onclick="go(-1)" style="visibility:hidden">← Назад</button>
-    <button class="btn btn-primary" id="btnNext" onclick="go(1)">
-      <span class="btn-text">Далее →</span>
-      <div class="spinner"></div>
-    </button>
-  </div>
-
-  <!-- Success -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-icon">✓</div>
-    <h2>Анкета отправлена!</h2>
-    <p>Ваши данные получены. Мы свяжемся с вами в ближайшее время для обсуждения плана.</p>
-  </div>
-
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btnRU" onclick="setLang('ru')">RU</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
 </div>
 
-<script>
-// ─── CONFIG ───────────────────────────────────────────
-// Paste your Google Apps Script Web App URL here after deployment:
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby6vr5l3PRDXQmz6228X7tVnzFYUQdOLqugmgRHyJ9ETnUdj6RtljzixGpNQyMlVRg/exec';
-// ──────────────────────────────────────────────────────
+<div class="page-wrap">
 
+<div class="header">
+  <div class="logo-wrap">
+    <img class="logo-img" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/7QAsUGhvdG9zaG9wIDMuMAA4QklNA+0AAAAAABAASAAAAAEAAQBIAAAAAQAB/+FDvmh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDAgNzkuYTg3MzFiOSwgMjAyMS8wOS8wOS0wMDozNzozOCAgICAgICAgIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnhtcEdJbWc9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9nL2ltZy8iCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIKICAgICAgICAgICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgICAgICAgICAgeG1sbnM6aWxsdXN0cmF0b3I9Imh0dHA6Ly9ucy5hZG9iZS5jb20vaWxsdXN0cmF0b3IvMS4wLyIKICAgICAgICAgICAgeG1sbnM6cGRmPSJodHRwOi8vbnMuYWRvYmUuY29tL3BkZi8xLjMvIj4KICAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9qcGVnPC9kYzpmb3JtYXQ+CiAgICAgICAgIDxkYzp0aXRsZT4KICAgICAgICAgICAgPHJkZjpBbHQ+CiAgICAgICAgICAgICAgIDxyZGY6bGkgeG1sOmxhbmc9IngtZGVmYXVsdCI+QXJ0ICZhbXA7IElsbHVzdHJhdGlvbjwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpBbHQ+CiAgICAgICAgIDwvZGM6dGl0bGU+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+QWRvYmUgSWxsdXN0cmF0b3IgMjYuMCAoV2luZG93cyk8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHhtcDpDcmVhdGVEYXRlPjIwMjUtMDItMTRUMTk6NTY6MjUrMDY6MDA8L3htcDpDcmVhdGVEYXRlPgogICAgICAgICA8eG1wOk1vZGlmeURhdGU+MjAyNS0wMi0xNFQxMzo1NjoyN1o8L3htcDpNb2RpZnlEYXRlPgogICAgICAgICA8eG1wOk1ldGFkYXRhRGF0ZT4yMDI1LTAyLTE0VDE5OjU2OjI1KzA2OjAwPC94bXA6TWV0YWRhdGFEYXRlPgogICAgICAgICA8eG1wOlRodW1ibmFpbHM+CiAgICAgICAgICAgIDxyZGY6QWx0PgogICAgICAgICAgICAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9IlJlc291cmNlIj4KICAgICAgICAgICAgICAgICAgPHhtcEdJbWc6d2lkdGg+MjU2PC94bXBHSW1nOndpZHRoPgogICAgICAgICAgICAgICAgICA8eG1wR0ltZzpoZWlnaHQ+MTY4PC94bXBHSW1nOmhlaWdodD4KICAgICAgICAgICAgICAgICAgPHhtcEdJbWc6Zm9ybWF0PkpQRUc8L3htcEdJbWc6Zm9ybWF0PgogICAgICAgICAgICAgICAgICA8eG1wR0ltZzppbWFnZT4vOWovNEFBUVNrWkpSZ0FCQWdFQVNBQklBQUQvN1FBc1VHaHZkRzl6YUc5d0lETXVNQUE0UWtsTkErMEFBQUFBQUJBQVNBQUFBQUVBJiN4QTtBUUJJQUFBQUFRQUIvK0lNV0VsRFExOVFVazlHU1V4RkFBRUJBQUFNU0V4cGJtOENFQUFBYlc1MGNsSkhRaUJZV1ZvZ0I4NEFBZ0FKJiN4QTtBQVlBTVFBQVlXTnpjRTFUUmxRQUFBQUFTVVZESUhOU1IwSUFBQUFBQUFBQUFBQUFBQUFBQVBiV0FBRUFBQUFBMHkxSVVDQWdBQUFBJiN4QTtBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVJZM0J5ZEFBQUFWQUFBQUF6JiN4QTtaR1Z6WXdBQUFZUUFBQUJzZDNSd2RBQUFBZkFBQUFBVVltdHdkQUFBQWdRQUFBQVVjbGhaV2dBQUFoZ0FBQUFVWjFoWldnQUFBaXdBJiN4QTtBQUFVWWxoWldnQUFBa0FBQUFBVVpHMXVaQUFBQWxRQUFBQndaRzFrWkFBQUFzUUFBQUNJZG5WbFpBQUFBMHdBQUFDR2RtbGxkd0FBJiN4QTtBOVFBQUFBa2JIVnRhUUFBQS9nQUFBQVViV1ZoY3dBQUJBd0FBQUFrZEdWamFBQUFCREFBQUFBTWNsUlNRd0FBQkR3QUFBZ01aMVJTJiN4QTtRd0FBQkR3QUFBZ01ZbFJTUXdBQUJEd0FBQWdNZEdWNGRBQUFBQUJEYjNCNWNtbG5hSFFnS0dNcElERTVPVGdnU0dWM2JHVjBkQzFRJiN4QTtZV05yWVhKa0lFTnZiWEJoYm5rQUFHUmxjMk1BQUFBQUFBQUFFbk5TUjBJZ1NVVkROakU1TmpZdE1pNHhBQUFBQUFBQUFBQUFBQUFTJiN4QTtjMUpIUWlCSlJVTTJNVGsyTmkweUxqRUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBJiN4QTtBQUFBQUFBQUFBQUFBRmhaV2lBQUFBQUFBQUR6VVFBQkFBQUFBUmJNV0ZsYUlBQUFBQUFBQUFBQUFBQUFBQUFBQUFCWVdWb2dBQUFBJiN4QTtBQUFBYjZJQUFEajFBQUFEa0ZoWldpQUFBQUFBQUFCaW1RQUF0NFVBQUJqYVdGbGFJQUFBQUFBQUFDU2dBQUFQaEFBQXRzOWtaWE5qJiN4QTtBQUFBQUFBQUFCWkpSVU1nYUhSMGNEb3ZMM2QzZHk1cFpXTXVZMmdBQUFBQUFBQUFBQUFBQUJaSlJVTWdhSFIwY0RvdkwzZDNkeTVwJiN4QTtaV011WTJnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVpHVnpZd0FBJiN4QTtBQUFBQUFBdVNVVkRJRFl4T1RZMkxUSXVNU0JFWldaaGRXeDBJRkpIUWlCamIyeHZkWElnYzNCaFkyVWdMU0J6VWtkQ0FBQUFBQUFBJiN4QTtBQUFBQUFBdVNVVkRJRFl4T1RZMkxUSXVNU0JFWldaaGRXeDBJRkpIUWlCamIyeHZkWElnYzNCaFkyVWdMU0J6VWtkQ0FBQUFBQUFBJiN4QTtBQUFBQUFBQUFBQUFBQUFBQUFBQUFHUmxjMk1BQUFBQUFBQUFMRkpsWm1WeVpXNWpaU0JXYVdWM2FXNW5JRU52Ym1ScGRHbHZiaUJwJiN4QTtiaUJKUlVNMk1UazJOaTB5TGpFQUFBQUFBQUFBQUFBQUFDeFNaV1psY21WdVkyVWdWbWxsZDJsdVp5QkRiMjVrYVhScGIyNGdhVzRnJiN4QTtTVVZETmpFNU5qWXRNaTR4QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUIyYVdWM0FBQUFBQUFUcFA0QUZGOHVBQkRQJiN4QTtGQUFEN2N3QUJCTUxBQU5jbmdBQUFBRllXVm9nQUFBQUFBQk1DVllBVUFBQUFGY2Y1MjFsWVhNQUFBQUFBQUFBQVFBQUFBQUFBQUFBJiN4QTtBQUFBQUFBQUFBQUFBQUtQQUFBQUFuTnBaeUFBQUFBQVExSlVJR04xY25ZQUFBQUFBQUFFQUFBQUFBVUFDZ0FQQUJRQUdRQWVBQ01BJiN4QTtLQUF0QURJQU53QTdBRUFBUlFCS0FFOEFWQUJaQUY0QVl3Qm9BRzBBY2dCM0FId0FnUUNHQUlzQWtBQ1ZBSm9BbndDa0FLa0FyZ0N5JiN4QTtBTGNBdkFEQkFNWUF5d0RRQU5VQTJ3RGdBT1VBNndEd0FQWUErd0VCQVFjQkRRRVRBUmtCSHdFbEFTc0JNZ0U0QVQ0QlJRRk1BVklCJiN4QTtXUUZnQVdjQmJnRjFBWHdCZ3dHTEFaSUJtZ0doQWFrQnNRRzVBY0VCeVFIUkFka0I0UUhwQWZJQitnSURBZ3dDRkFJZEFpWUNMd0k0JiN4QTtBa0VDU3dKVUFsMENad0p4QW5vQ2hBS09BcGdDb2dLc0FyWUN3UUxMQXRVQzRBTHJBdlVEQUFNTEF4WURJUU10QXpnRFF3TlBBMW9EJiN4QTtaZ055QTM0RGlnT1dBNklEcmdPNkE4Y0Qwd1BnQSt3RCtRUUdCQk1FSUFRdEJEc0VTQVJWQkdNRWNRUitCSXdFbWdTb0JMWUV4QVRUJiN4QTtCT0VFOEFUK0JRMEZIQVVyQlRvRlNRVllCV2NGZHdXR0JaWUZwZ1cxQmNVRjFRWGxCZllHQmdZV0JpY0dOd1pJQmxrR2FnWjdCb3dHJiN4QTtuUWF2QnNBRzBRYmpCdlVIQndjWkJ5c0hQUWRQQjJFSGRBZUdCNWtIckFlL0I5SUg1UWY0Q0FzSUh3Z3lDRVlJV2dodUNJSUlsZ2lxJiN4QTtDTDRJMGdqbkNQc0pFQWtsQ1RvSlR3bGtDWGtKandta0Nib0p6d25sQ2ZzS0VRb25DajBLVkFwcUNvRUttQXF1Q3NVSzNBcnpDd3NMJiN4QTtJZ3M1QzFFTGFRdUFDNWdMc0F2SUMrRUwrUXdTRENvTVF3eGNESFVNamd5bkRNQU0yUXp6RFEwTkpnMUFEVm9OZEEyT0Rha053dzNlJiN4QTtEZmdPRXc0dURra09aQTUvRHBzT3RnN1NEdTRQQ1E4bEQwRVBYZzk2RDVZUHN3L1BEK3dRQ1JBbUVFTVFZUkIrRUpzUXVSRFhFUFVSJiN4QTtFeEV4RVU4UmJSR01FYW9SeVJIb0VnY1NKaEpGRW1RU2hCS2pFc01TNHhNREV5TVRReE5qRTRNVHBCUEZFK1VVQmhRbkZFa1VhaFNMJiN4QTtGSzBVemhUd0ZSSVZOQlZXRlhnVm14VzlGZUFXQXhZbUZra1diQmFQRnJJVzFoYjZGeDBYUVJkbEY0a1hyaGZTRi9jWUd4aEFHR1VZJiN4QTtpaGl2R05VWStoa2dHVVVaYXhtUkdiY1ozUm9FR2lvYVVScDNHcDRheFJyc0d4UWJPeHRqRzRvYnNodmFIQUljS2h4U0hIc2NveHpNJiN4QTtIUFVkSGgxSEhYQWRtUjNESGV3ZUZoNUFIbW9lbEI2K0h1a2ZFeDgrSDJrZmxCKy9IK29nRlNCQklHd2dtQ0RFSVBBaEhDRklJWFVoJiN4QTtvU0hPSWZzaUp5SlZJb0lpcnlMZEl3b2pPQ05tSTVRandpUHdKQjhrVFNSOEpLc2syaVVKSlRnbGFDV1hKY2NsOXlZbkpsY21oeWEzJiN4QTtKdWduR0NkSkozb25xeWZjS0Ewb1B5aHhLS0lvMUNrR0tUZ3BheW1kS2RBcUFpbzFLbWdxbXlyUEt3SXJOaXRwSzUwcjBTd0ZMRGtzJiN4QTtiaXlpTE5jdERDMUJMWFl0cXkzaExoWXVUQzZDTHJjdTdpOGtMMW92a1MvSEwvNHdOVEJzTUtRdzJ6RVNNVW94Z2pHNk1mSXlLakpqJiN4QTtNcHN5MURNTk0wWXpmek80TS9FMEt6UmxOSjQwMkRVVE5VMDFoelhDTmYwMk56WnlOcTQyNlRja04yQTNuRGZYT0JRNFVEaU1PTWc1JiN4QTtCVGxDT1g4NXZEbjVPalk2ZERxeU91ODdMVHRyTzZvNzZEd25QR1U4cER6alBTSTlZVDJoUGVBK0lENWdQcUErNEQ4aFAyRS9vai9pJiN4QTtRQ05BWkVDbVFPZEJLVUZxUWF4QjdrSXdRbkpDdFVMM1F6cERmVVBBUkFORVIwU0tSTTVGRWtWVlJacEYza1lpUm1kR3EwYndSelZIJiN4QTtlMGZBU0FWSVMwaVJTTmRKSFVsalNhbEo4RW8zU24xS3hFc01TMU5MbWt2aVRDcE1ja3k2VFFKTlNrMlRUZHhPSlU1dVRyZFBBRTlKJiN4QTtUNU5QM1ZBblVIRlF1MUVHVVZCUm0xSG1VakZTZkZMSFV4TlRYMU9xVS9aVVFsU1BWTnRWS0ZWMVZjSldEMVpjVnFsVzkxZEVWNUpYJiN4QTs0Rmd2V0gxWXkxa2FXV2xadUZvSFdsWmFwbHIxVzBWYmxWdmxYRFZjaGx6V1hTZGRlRjNKWGhwZWJGNjlYdzlmWVYrellBVmdWMkNxJiN4QTtZUHhoVDJHaVlmVmlTV0tjWXZCalEyT1hZK3RrUUdTVVpPbGxQV1dTWmVkbVBXYVNadWhuUFdlVForbG9QMmlXYU94cFEybWFhZkZxJiN4QTtTR3FmYXZkclQydW5hLzlzVjJ5dmJRaHRZRzI1YmhKdWEyN0VieDV2ZUcvUmNDdHdobkRnY1RweGxYSHdja3R5cG5NQmMxMXp1SFFVJiN4QTtkSEIwekhVb2RZVjE0WFkrZHB0MitIZFdkN040RVhodWVNeDVLbm1KZWVkNlJucWxld1I3WTN2Q2ZDRjhnWHpoZlVGOW9YNEJmbUorJiN4QTt3bjhqZjRSLzVZQkhnS2lCQ29GcmdjMkNNSUtTZ3ZTRFY0TzZoQjJFZ0lUamhVZUZxNFlPaG5LRzE0YzdoNStJQklocGlNNkpNNG1aJiN4QTtpZjZLWklyS2l6Q0xsb3Y4akdPTXlvMHhqWmlOLzQ1bWpzNlBObytla0FhUWJwRFdrVCtScUpJUmtucVM0NU5OazdhVUlKU0tsUFNWJiN4QTtYNVhKbGpTV241Y0tsM1dYNEpoTW1MaVpKSm1RbWZ5YWFKclZtMEticjV3Y25JbWM5NTFrbmRLZVFKNnVueDJmaTUvNm9HbWcyS0ZIJiN4QTtvYmFpSnFLV293YWpkcVBtcEZha3g2VTRwYW1tR3FhTHB2Mm5icWZncUZLb3hLazNxYW1xSEtxUHF3S3JkYXZwckZ5czBLMUVyYml1JiN4QTtMYTZocnhhdmk3QUFzSFd3NnJGZ3NkYXlTN0xDc3ppenJyUWx0SnkxRTdXS3RnRzJlYmJ3dDJpMzRMaFp1Tkc1U3JuQ3VqdTZ0YnN1JiN4QTt1NmU4SWJ5YnZSVzlqNzRLdm9TKy83OTZ2L1hBY01Ec3dXZkI0OEpmd3R2RFdNUFV4RkhFenNWTHhjakdSc2JEeDBISHY4Zzl5THpKJiN4QTtPc201eWpqS3Q4czJ5N2JNTmN5MXpUWE50YzQyenJiUE44KzQwRG5RdXRFODBiN1NQOUxCMDBUVHh0UkoxTXZWVHRYUjFsWFcyTmRjJiN4QTsxK0RZWk5qbzJXelo4ZHAyMnZ2YmdOd0YzSXJkRU4yVzNoemVvdDhwMzYvZ051Qzk0VVRoek9KVDR0dmpZK1ByNUhQay9PV0U1ZzNtJiN4QTtsdWNmNTZub011aTg2VWJwME9wYjZ1WHJjT3Y3N0lidEVlMmM3aWp1dE85QTc4endXUERsOFhMeC8vS004eG56cC9RMDlNTDFVUFhlJiN4QTs5bTMyKy9lSytCbjRxUGs0K2NmNlYvcm4rM2Y4Qi95WS9Tbjl1djVML3R6L2JmLy8vKzRBRGtGa2IySmxBR1RBQUFBQUFmL2JBSVFBJiN4QTtCZ1FFQkFVRUJnVUZCZ2tHQlFZSkN3Z0dCZ2dMREFvS0N3b0tEQkFNREF3TURBd1FEQTRQRUE4T0RCTVRGQlFURXh3Ykd4c2NIeDhmJiN4QTtIeDhmSHg4Zkh3RUhCd2NOREEwWUVCQVlHaFVSRlJvZkh4OGZIeDhmSHg4Zkh4OGZIeDhmSHg4Zkh4OGZIeDhmSHg4Zkh4OGZIeDhmJiN4QTtIeDhmSHg4Zkh4OGZIeDhmSHg4Zi84QUFFUWdBcUFFQUF3RVJBQUlSQVFNUkFmL0VBYUlBQUFBSEFRRUJBUUVBQUFBQUFBQUFBQVFGJiN4QTtBd0lHQVFBSENBa0tDd0VBQWdJREFRRUJBUUVBQUFBQUFBQUFBUUFDQXdRRkJnY0lDUW9MRUFBQ0FRTURBZ1FDQmdjREJBSUdBbk1CJiN4QTtBZ01SQkFBRklSSXhRVkVHRTJFaWNZRVVNcEdoQnhXeFFpUEJVdEhoTXhaaThDUnlndkVsUXpSVGtxS3lZM1BDTlVRbms2T3pOaGRVJiN4QTtaSFREMHVJSUpvTUpDaGdaaEpSRlJxUzBWdE5WS0JyeTQvUEUxT1QwWlhXRmxhVzF4ZFhsOVdaMmhwYW10c2JXNXZZM1IxZG5kNGVYJiN4QTtwN2ZIMStmM09FaFlhSGlJbUtpNHlOam8rQ2s1U1ZscGVZbVpxYm5KMmVuNUtqcEtXbXA2aXBxcXVzcmE2dm9SQUFJQ0FRSURCUVVFJiN4QTtCUVlFQ0FNRGJRRUFBaEVEQkNFU01VRUZVUk5oSWdaeGdaRXlvYkh3Rk1IUjRTTkNGVkppY3ZFekpEUkRnaGFTVXlXaVk3TENCM1BTJiN4QTtOZUpFZ3hkVWt3Z0pDaGdaSmpaRkdpZGtkRlUzOHFPend5Z3AwK1B6aEpTa3RNVFU1UFJsZFlXVnBiWEYxZVgxUmxabWRvYVdwcmJHJiN4QTsxdWIyUjFkbmQ0ZVhwN2ZIMStmM09FaFlhSGlJbUtpNHlOam8rRGxKV1dsNWlabXB1Y25aNmZrcU9rcGFhbnFLbXFxNnl0cnErdi9hJiN4QTtBQXdEQVFBQ0VRTVJBRDhBOVU0cTdGWFlxN0ZYWXE3Rlh3ci9BTTVlZitUbHVmOEFtQnRQK0luRlhpdUt1eFYyS3V4VjJLdXhWK2xYJiN4QTs1VC8rU3M4bS93RGJEMDMvQUtnNDhWWlZpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyJiN4QTtzVmRpcnNWZkN2OEF6bDUvNU9XNS93Q1lHMC80aWNWZUs0cTdGWFlxN0ZYWXE3Rlg2VmZsUC81S3p5Yi9BTnNQVGY4QXFEanhWbFdLJiN4QTt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMktzSC9BRFAvQURrOGxmbHhhMjhtdnpTeTNWMmY5RzA2JiN4QTt6VkpMbDBHelNjWGVOVlFIYXJNSzlxNHF0ZjhBT1h5ZEYrV01YNWpYUDFpMjBPZEM4RnZLa1l1NUhFalJMRWtheU1oZDJRMEhPbE55JiN4QTtRSzBWWkQ1UDh6USthUExsbHIxdlpYV24yMm9KNnR2YjN5eHh6K21UOERzc2J5cUE0K0pmaTZZcW5PS3V4VjhLL3dET1huL2s1Ym4vJiN4QTtBSmdiVC9pSnhWNHJpcnNWZXcrUi93RG5GLzhBTUR6VjVWSG1iMXJUU3JDYU16V2NkNFpCTk5Fb0o5UUlpTnhWcWZEeU8vWHBRbFZqJiN4QTtYNWVmbERydm5UU2RZMXhMdTIwalFORGpNbDdxdCtaRmg1QWNqR25wcTdNd1RjMEhoM0l4VmdqQlF4Q21xZzdIcFVZcTFpcjlLdnluJiN4QTsvd0RKV2VUZisySHB2L1VISGlyS3NWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcVMrYy9OK2plVVBMJiN4QTtOOTVoMWlUMDdLeGpMc29wemtjN0pGR0NSVjNhaXJpcjVGdjdLSHpyNUM4OC9tbjVvdjdTNTh5M2x1aTZGb2tjOGNrbGhaTGRSUm1UJiN4QTswcWwwMmJndFFOaVdPNzRxeGJ5NTV2R3EyL2tpMjg1V04xL3lxL3l0Y2ZWYnA0STJlQ1M3bFo1eTA1cHhPemdGQjhYcGc4ZDJPS3Z2JiN4QTtUVGI3VDcrd3Q3elRaNHJtd25RUGJUd01yeE1oR3hSbDJwaXFKeFYyS3ZoWC9uTHovd0FuTGMvOHdOcC94RTRxOFZ4VjZ6L3pqeCtVJiN4QTtEK2Z2Tkp2TlNpZi9BQXRvcFdmVTJDc2ZYY2ZFbHFuRUVrdlNyOGQrUGdTdUt2cEQ4c3ZObm12emQ1ODg3Mm1vYWRkZVh0UHQ5T3RiJiN4QTtieTVwbDlieVd6Uld6dGNJdHdZSENieU10VFR3QzErSEZXSWZuRjVLdVpQeWVoOHEvbFpkUTZqb2ZsaTVlSHpYcDlvUTk3TFBDQXhlJiN4QTtUaDlzckp5ZVJBT3RLYkxRS3ZrWEZYWXEvU3I4cC84QXlWbmszL3RoNmIvMUJ4NHF5ckZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGJiN4QTtYWXE3RlhZcTdGWFlxN0ZYWXFrM21ueWI1WTgxMmNWbDVpMCtQVXJTR1Qxb29KdVJRU1VLaCtJSUJJREVBbnh4VktyRDhvL3kwMC9UJiN4QTtML1M3THk3WndXT3FLaWFoQ2lmM3l4c0hSWGF2S2lzSzByaXFQdC9JSGt1MzhzU2VWb2RHdFU4dlRjdlYwMzB3WW1MdHlMRUhxM0xmJiN4QTtsMUczaGlxSzh0K1Z2TC9sblRmMFpvTmtsaHA0ZHBGdG9pM0JXZjdSVU1UU3Z0aXFhNHE3Rlh3ci93QTVlZjhBazVibi9tQnRQK0luJiN4QTtGWGl1S3NrMEQ4eVBQdmw2dy9SK2hhL2U2WlpjMmtOdmF6UEVoZHFjbUlVamMwRytLcnJUOHpQekNzOVR2ZFV0dk1lb3hhbHFJUVgxJiN4QTs0dHpMNnNvanFFRHZYa1FnTkZIYnRpcUIwRHpqNXI4dTNVOTNvV3IzZW1YTnlPTnpMYlRQRzBncnkrUGlmaTMzM3hWTExxNnVMdTVsJiN4QTt1cmx6TGNUdTBrMHJkV2R6Vm1QdVNjVlVzVmZwVitVLy9rclBKdjhBMnc5Ti93Q29PUEZXVllxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3JiN4QTtGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYd3IvQU01ZWYrVGx1ZjhBbUJ0UCtJbkZYaXVLdXhWMkt1eFYyS3V4JiN4QTtWK2xYNVQvK1NzOG0vd0RiRDAzL0FLZzQ4VlpWaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzJiN4QTtWZGlyc1ZkaXJzVmZKUDhBemtuK1RuNWwrYS96UG4xZnkvb2N0L3B6Mmx2R3R3a2tLZ3Vpa01LTzZ0dDhzVmVXZjlDM2ZuYi9BTlN0JiN4QTtQL3lPdHY4QXFyaXJ2K2hidnp0LzZsYWYva2RiZjlWY1ZkLzBMZCtkdi9VclQvOEFJNjIvNnE0cTcvb1c3ODdmK3BXbi93Q1IxdC8xJiN4QTtWeFYzL1F0MzUyLzlTdFAvQU1qcmIvcXJpcnYraGJ2enQvNmxhZjhBNUhXMy9WWEZYM1IrWFdtMzJsL2w5NVkweS9pTUY5WTZUWTIxJiN4QTszQVNDVWxodGtTUkNWSkh3c3BHeHhWa09LdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1JiN4QTt4VjJLdXhWOFJmOEFPVC9uRHpicHY1eDZyYWFkcmQvWldpUTJoUzN0N3FhS01GclpDYUlqS29xY1ZlVWY4ckM4L2Y4QVV5NnIvd0JKJiN4QTsxei96WGlyditWaGVmdjhBcVpkVi93Q2s2NS81cnhWMy9Ld3ZQMy9VeTZyL0FOSjF6L3pYaXJ2K1ZoZWZ2K3BsMVgvcE91ZithOFZkJiN4QTsvd0FyQzgvZjlUTHF2L1NkYy84QU5lS3Uvd0NWaGVmditwbDFYL3BPdWY4QW12Rlg2Q2ZrOWRYVjMrVm5sUzZ1cG51TG1iVExaNXA1JiN4QTtXTHU3R01Fc3pNU1NUNG5GV1lZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3JiN4QTtGWHdYL3dBNVlmOEFrN2RZL3dDTUZuLzFEUjRxOGZ4VjJLdXhWMkt1eFYyS3YwZi9BQ1UvOGxINVEvN1pWci95YUdLczF4VjJLdXhWJiN4QTsyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLb0tiWE5FZ3UyczV0UXRvcnRUR0d0M21qV1FHZHVFUUtFOHYzakdpJiN4QTsrSjZZcTFiNjdvbHpkeTJWdnFGdE5lUVNlalBiUnpSdktrbEdiZzZBbGxhaU1hRWRqNFlxaTNuZ2plT09TUlVrbUpXRkdJQmRncFloJiN4QTtRZXBDcVR0MnhWZmlyc1ZkaXI0TC93Q2NzUDhBeWR1c2Y4WUxQL3FHanhWNC9pcnNWZGlyc1ZkaXJzVmZvLzhBa3AvNUtQeWgvd0JzJiN4QTtxMS81TkRGV2E0cTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhpRjcrVGxsNWY4NFczblNmVXRaMWpYJiN4QTsxbEZ4STlyWXhYTVVzd21rWXZQRUFla01waWpvUVkxQTRrYkRGVm12ZmxENWIxQzgxclVyaDllamsxbThhNkVWdll3OGJkNWhjV2tqJiN4QTtKR2tScVdTN1ovVXB6MlYySllFbFZUaS9LVHl6SHFVbW9SeSthRWppdW9KN0NFVzlCYmNyYVMxZjZzT0hOQ0VJTFNVNWdxalZKRmNWJiN4QTtTSmZ5TDEzVjllaHRyWFhOWGcwK3kweUMzZ3Y5VGp1Qk9qcmNMSUdSaVVRTkdxSGdpRXJUcUJWaVZYMFhwMWhiYWZwOXRZV3E4TGF6JiN4QTtpU0NCQ1NTSTRsQ0tLbnJzTVZSR0t2Z3YvbkxEL3dBbmJySC9BQmdzL3dEcUdqeFY1MzVMMWJROUg4eDJtcWExcDdhcFoyYkdWYkVNJiN4QTtxckpLb3JGNm5KWERJcjBMTFQ0dW5mRlhzUG1iOHlOWjFUV1BMbm14ZkxkM1lSNlZNdXNYSlM3dGZUdk9kdkVyWFQ4NFdWWnFSZ0tTJiN4QTtwQVNnVUtha3FvM1ZQT1NhM2ZOSmRmbGtseThkNUxKKy9sdHBaUFNGMnR4Y0xKSzhYTG1WaWxqcXhJQ25ZYmJxcGRKckdqYXJFYlFmJiN4QTtsZkViQXhhcGI2YXEzQ0s5dTF6T0hTUUdNSThqUVBISW9VbXBGQWhXcDVLb1A4M1BNdjVVUWFYZjZONWQ4c3gyV3J6TGJSVzh6VzBjJiN4QTtadGtIR1M1Y1NjbWQyZGtXSk9RNUtPWnI4VzZyeExGWDZQOEE1S2YrU2o4b2Y5c3ExLzVOREZXYTRxN0ZYWXE3RlhZcTdGWFlxN0ZYJiN4QTtZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYd1gvemxoLzVPM1dQK01Gbi93QlEwZUt2SDhWZGlyc1ZkaXJzJiN4QTtWZGlyOUgveVUvOEFKUitVUCsyVmEvOEFKb1lxelhGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGJiN4QTtYWXE3RlhZcTdGWFlxK0MvK2NzUC9KMjZ4L3hncy84QXFHanhWNC9pcnNWZGlyc1ZkaXJzVmZvLytTbi9BSktQeWgvMnlyWC9BSk5EJiN4QTtGV2E0cTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3Rlh4VC96azErWC9BSjgxJiN4QTtqODROVnY4QVNQTGVxYWpZeVEyZ2p1N1N5dUo0bUsyNkt3RWthTXBvUlE3NHE4cy81VlArYWY4QTFKdXVmOXcyOC82cDRxNy9BSlZQJiN4QTsrYWYvQUZKdXVmOEFjTnZQK3FlS3UvNVZQK2FmL1VtNjUvM0Riei9xbmlyditWVC9BSnAvOVNicm4vY052UDhBcW5pcnYrVlQvbW4vJiN4QTtBTlNicm4vY052UCtxZUt1L3dDVlQvbW4vd0JTYnJuL0FIRGJ6L3FuaXI3Ny9LR3h2YkQ4ci9LMWxmVzhscGVXK21XMGR4YlRvMGNzJiN4QTtickdBeXVqQU1wSGNFWXF5N0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxN0ZYWXE3RlhZcTdGWFlxJiN4QTsrT2YrY2ovemEvTWp5NStiT3A2VG9mbUM2c05PaGh0V2l0b1dVSXBlM1JtSXFEMVkxeFY1ai95djc4NVArcHN2ditDWC9tbkZYZjhBJiN4QTtLL3Z6ay82bXkrLzRKZjhBbW5GWGY4cisvT1QvQUtteSsvNEpmK2FjVmQveXY3ODVQK3BzdnY4QWdsLzVweFYzL0svdnprLzZteSsvJiN4QTs0SmYrYWNWZC93QXIrL09UL3FiTDcvZ2wvd0NhY1ZmZFA1VWFwcUdxL2xwNVoxTFVaMnViNjgwNjNtdWJoOTJlUjR3V1krNU9Lc3J4JiN4QTtWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdmd2L25MRC95ZHVzZjhZTFAvJiN4QTtBS2hvOFZlUDRxN0ZYWXE3RlhZcTdGWDZQL2twL3dDU2o4b2Y5c3ExL3dDVFF4Vm11S3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1JiN4QTt4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjhGLzg1WWYrVHQxai9qQlovd0RVTkhpcngvRlhZcTdGWFlxN0ZYWXEvUi84JiN4QTtsUDhBeVVmbEQvdGxXdjhBeWFHS3MxeFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VjJLdXhWMkt2RTcrMC9PeSs4JiN4QTs3SFZUZlFXdmwxcmhFbDBPSFVFamsrcFFYRVRSaUZsVWdUeWdNMHJNd3F0WXd5aWh4VlYxalJmem1UemRyT282UnJzQ2FPOTliWEZoJiN4QTtiVDNna3JFbktPYTNTTW9zVWFiaHlDQTFSVGsvWEZVU0kvejhmVjRoUHF1a2pUN2FleWxSMEtLWjE5RXBkeHlJTndna2ZueEJyUmRtJiN4QTtyVEZVbTFIelAvemtwYTNWbGJSYWZaM3N5Mkx6WFV0amJOSmF2ZEpPNnh4R1dSbFg5NHZwcTNGL2grSmlOc1ZlMWFKSHFzZWoyS2F2JiN4QTtLazJxckJHTCtXSmVNYlQ4QjZwUlIwWG5XbUtvM0ZYd1gvemxoLzVPM1dQK01Gbi9BTlEwZUt2UC9JbHI1YXVQTTFyL0FJbGVZYUxEJiN4QTt5bXVvcmVONUpKaEdLckNQVCtKUTdVRE4yV3BHOU1WZWxlWmRlL0tTWHpMNWUxRFJ0REVPbXhYbjFqekJwczJtc0ZsckJIVVFjWkFmJiN4QTtxOGZGaDZaSStLcmtPRFRGVlRWNzcvbkgvVVoxWk5HMUMzaml2V1F5UVFOQ1piZVc3amN5Y0l5RStDM2FSRlVjVFVBMDdZcWd0UmovJiN4QTtBQ0VtZ2UwZ3NkWXR4YXdhZ0xPNlZSSEpMSzg2U1dUM0x1R1VJc2JNaFBIYW0vWTRxMytaV2gva1RwV2hYcmVXYnQ3eldXRnRIcDhVJiN4QTtkMFoxVjVPTWx3OHhVRkQ2VWE4QnhlaGR6L0xzcThkeFYrai9BT1NuL2tvL0tIL2JLdGYrVFF4Vm11S3V4VjJLdXhWMkt1eFYyS3V4JiN4QTtWMkt1eFYyS3V4VjJLdXhWMkt1eFYyS3V4VktFOG5lVVkyWmswUFQwWmxaR0syc0lKVmhSbE5GNkVIZkZYUDVQOHBQS0puMFN3YVVjJiN4QTtpSkRhd2xoeU5XMzQxM081eFZaSjVIOGx5T0hrMERUWGNBZ00xcEFUUnFjaFVwM29LNHFtMXRhMjFyQ3NGdEVrRUNWNFJScUVRVk5UJiN4QTtSVm9PcHJpcXBpcnNWZkJmL09XSC9rN2RZLzR3V2Y4QTFEUjRxOG9zTlQxTFRwelBwOTNOWnpsU2hsdDVHaWNxYUVyeVFnME5PbUtvJiN4QTsxL05ubXA1VE0rczN6U3NBclNHNW1MRlFDQUNTMWFVWWo2Y1ZYeWVjL09FcitwSnJ1b1BKdDhiWFU1TzNUY3ZpcTI1ODMrYkxxR1NHJiN4QTs2MXEvbmhtVDA1WTVicVoxZEFBdkZnekVGYUtCUStHS3BSaXJzVmZvL3dEa3AvNUtQeWgvMnlyWC9rME1WWnJpcnNWZGlyc1ZkaXJzJiN4QTtWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZkJmL09XSC9rN2RZLzR3V2YvQUZEUjRxOGZ4VjJLJiN4QTt1eFYyS3V4VjJLdjBmL0pUL3dBbEg1US83WlZyL3dBbWhpck5jVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyJiN4QTtzVmRpcnNWZGlyc1ZkaXJzVmRpcjRMLzV5dy84bmJySC9HQ3ovd0NvYVBGWGorS3V4VjJLdXhWMkt1eFYrai81S2Y4QWtvL0tIL2JLJiN4QTt0ZjhBazBNVlpyaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZkaXJzVmRpcnNWZGlyc1ZmLzJRPT08L3htcEdJbWc6aW1hZ2U+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpBbHQ+CiAgICAgICAgIDwveG1wOlRodW1ibmFpbHM+CiAgICAgICAgIDx4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ+dXVpZDo5RTNFNUM5QThDODFEQjExODczNERCNThGRERFNEJBNzwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD54bXAuZGlkOjU1OWQyYmVmLWQwYjktNjU0Ni1iYTFjLTRmMTI4ZDEyNTNmODwveG1wTU06RG9jdW1lbnRJRD4KICAgICAgICAgPHhtcE1NOkluc3RhbmNlSUQ+eG1wLmlpZDo1NTlkMmJlZi1kMGI5LTY1NDYtYmExYy00ZjEyOGQxMjUzZjg8L3htcE1NOkluc3RhbmNlSUQ+CiAgICAgICAgIDx4bXBNTTpSZW5kaXRpb25DbGFzcz5wcm9vZjpwZGY8L3htcE1NOlJlbmRpdGlvbkNsYXNzPgogICAgICAgICA8eG1wTU06RGVyaXZlZEZyb20gcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICA8c3RSZWY6aW5zdGFuY2VJRD54bXAuaWlkOmRiZGM2ZWY2LWFmZDMtNGQ0Yi05ODAzLTliNmFmYTVkMTRiNDwvc3RSZWY6aW5zdGFuY2VJRD4KICAgICAgICAgICAgPHN0UmVmOmRvY3VtZW50SUQ+eG1wLmRpZDpkYmRjNmVmNi1hZmQzLTRkNGItOTgwMy05YjZhZmE1ZDE0YjQ8L3N0UmVmOmRvY3VtZW50SUQ+CiAgICAgICAgICAgIDxzdFJlZjpvcmlnaW5hbERvY3VtZW50SUQ+dXVpZDo5RTNFNUM5QThDODFEQjExODczNERCNThGRERFNEJBNzwvc3RSZWY6b3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICAgICA8c3RSZWY6cmVuZGl0aW9uQ2xhc3M+cHJvb2Y6cGRmPC9zdFJlZjpyZW5kaXRpb25DbGFzcz4KICAgICAgICAgPC94bXBNTTpEZXJpdmVkRnJvbT4KICAgICAgICAgPHhtcE1NOkhpc3Rvcnk+CiAgICAgICAgICAgIDxyZGY6U2VxPgogICAgICAgICAgICAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9IlJlc291cmNlIj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OmFjdGlvbj5zYXZlZDwvc3RFdnQ6YWN0aW9uPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6aW5zdGFuY2VJRD54bXAuaWlkOmJiM2Y0ODQyLTJlNzAtYmQ0YS04NzBjLThlMDU2MGI5MDljZDwvc3RFdnQ6aW5zdGFuY2VJRD4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OndoZW4+MjAyNS0wMi0xNFQxMzoyOTozMSswNjowMDwvc3RFdnQ6d2hlbj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OnNvZnR3YXJlQWdlbnQ+QWRvYmUgSWxsdXN0cmF0b3IgMjYuMCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9IlJlc291cmNlIj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OmFjdGlvbj5zYXZlZDwvc3RFdnQ6YWN0aW9uPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6aW5zdGFuY2VJRD54bXAuaWlkOjU1OWQyYmVmLWQwYjktNjU0Ni1iYTFjLTRmMTI4ZDEyNTNmODwvc3RFdnQ6aW5zdGFuY2VJRD4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OndoZW4+MjAyNS0wMi0xNFQxOTo1NjoyNSswNjowMDwvc3RFdnQ6d2hlbj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OnNvZnR3YXJlQWdlbnQ+QWRvYmUgSWxsdXN0cmF0b3IgMjYuMCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPGlsbHVzdHJhdG9yOlN0YXJ0dXBQcm9maWxlPkJhc2ljIFJHQjwvaWxsdXN0cmF0b3I6U3RhcnR1cFByb2ZpbGU+CiAgICAgICAgIDxpbGx1c3RyYXRvcjpDcmVhdG9yU3ViVG9vbD5BZG9iZSBJbGx1c3RyYXRvcjwvaWxsdXN0cmF0b3I6Q3JlYXRvclN1YlRvb2w+CiAgICAgICAgIDxwZGY6UHJvZHVjZXI+QWRvYmUgUERGIGxpYnJhcnkgMTUuMDA8L3BkZjpQcm9kdWNlcj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/Pv/iDFhJQ0NfUFJPRklMRQABAQAADEhMaW5vAhAAAG1udHJSR0IgWFlaIAfOAAIACQAGADEAAGFjc3BNU0ZUAAAAAElFQyBzUkdCAAAAAAAAAAAAAAAAAAD21gABAAAAANMtSFAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNwcnQAAAFQAAAAM2Rlc2MAAAGEAAAAbHd0cHQAAAHwAAAAFGJrcHQAAAIEAAAAFHJYWVoAAAIYAAAAFGdYWVoAAAIsAAAAFGJYWVoAAAJAAAAAFGRtbmQAAAJUAAAAcGRtZGQAAALEAAAAiHZ1ZWQAAANMAAAAhnZpZXcAAAPUAAAAJGx1bWkAAAP4AAAAFG1lYXMAAAQMAAAAJHRlY2gAAAQwAAAADHJUUkMAAAQ8AAAIDGdUUkMAAAQ8AAAIDGJUUkMAAAQ8AAAIDHRleHQAAAAAQ29weXJpZ2h0IChjKSAxOTk4IEhld2xldHQtUGFja2FyZCBDb21wYW55AABkZXNjAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAA81EAAQAAAAEWzFhZWiAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeF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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==" alt="AK Strategy">
+    <div class="logo-text">
+      <span class="logo-name">AK Strategy</span>
+      <span class="logo-sub" data-ru="Client Intake" data-en="Client Intake">Client Intake</span>
+    </div>
+  </div>
+  <div class="header-label" data-ru="Финансовый департамент" data-en="Finance Department">Финансовый департамент</div>
+  <h1 data-ru="Анкета клиента" data-en="Client Intake Form">Анкета клиента</h1>
+  <p data-ru="Заполните все разделы — это позволит нам разработать точный план для вашего кредитного профиля." data-en="Fill out all sections — this allows us to build a precise plan for your credit profile.">Заполните все разделы — это позволит нам разработать точный план для вашего кредитного профиля.</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps"></div>
+  <div class="progress-label" id="progressLabel"><span>Раздел 1 из 6</span></div>
+</div>
+
+<form id="mainForm" novalidate>
+
+<!-- ══════════════ SECTION 1: GENERAL ══════════════ -->
+<div class="section active" id="s1">
+  <div class="section-tag" data-ru="01 — Общее" data-en="01 — General">01 — Общее</div>
+  <div class="section-title" data-ru="Общая информация" data-en="General Information">Общая информация</div>
+  <div class="section-desc" data-ru="Базовые сведения о бизнесе и целях финансирования." data-en="Basic information about your business and funding goals.">Базовые сведения о бизнесе и целях финансирования.</div>
+
+  <div class="q-grid">
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Имя владельца" data-en="Owner First Name">Имя владельца <span class="req">*</span></div>
+      <input type="text" name="owner_first_name" placeholder="Имя">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Фамилия владельца" data-en="Owner Last Name">Фамилия владельца <span class="req">*</span></div>
+      <input type="text" name="owner_last_name" placeholder="Фамилия">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+  </div>
+
+  <div class="q-grid">
+    <div class="q">
+      <div class="q-label" data-ru="Телефон" data-en="Phone">Телефон</div>
+      <div class="phone-wrap"><span class="phone-prefix">+1</span><input type="tel" name="owner_phone" id="phoneInput" placeholder="(000) 000-0000" maxlength="14"></div>
+    </div>
+    <div class="q">
+      <div class="q-label" data-ru="Email" data-en="Email">Email</div>
+      <input type="email" name="owner_email" placeholder="name@email.com">
+    </div>
+  </div>
+
+  <div class="q" data-required="true">
+    <div class="q-label" data-ru="Полное юридическое название бизнеса" data-en="Full Legal Business Name">Полное юридическое название бизнеса <span class="req">*</span></div>
+    <input type="text" name="business_name" placeholder="Например: ABC Logistics LLC">
+    <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+  </div>
+
+  <div class="q-grid">
+    <div class="q">
+      <div class="q-label" data-ru="EIN (налоговый номер бизнеса)" data-en="EIN (Business Tax ID)">EIN (налоговый номер бизнеса)</div>
+      <div class="q-hint" data-ru="Это 9-значный номер, который вам выдало IRS при регистрации бизнеса." data-en="This is the 9-digit number issued by the IRS when you registered your business.">Это 9-значный номер, который вам выдало IRS при регистрации бизнеса.</div>
+      <input type="text" name="ein" id="einInput" placeholder="12-3456789" maxlength="10">
+    </div>
+    <div class="q">
+      <div class="q-label" data-ru="Тип юридического лица" data-en="Entity Type">Тип юридического лица</div>
+      <select name="entity_type">
+        <option value="" data-ru="Выберите..." data-en="Select...">Выберите...</option>
+        <option>LLC</option>
+        <option>S-Corp</option>
+        <option>C-Corp</option>
+        <option>Sole Proprietorship</option>
+        <option>Partnership</option>
+        <option data-ru="Ещё не зарегистрировано" data-en="Not yet registered">Ещё не зарегистрировано</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Какую сумму финансирования вы хотите получить?" data-en="How much funding are you seeking?">Какую сумму финансирования вы хотите получить? <span class="req">*</span></div>
+    <div class="chip-group" data-name="funding_amount" data-multi="false">
+      <span class="chip" data-val="До $10 000" data-en="Under $10,000">До $10 000</span>
+      <span class="chip" data-val="$10 000 – $25 000" data-en="$10k – $25k">$10 000 – $25 000</span>
+      <span class="chip" data-val="$25 000 – $50 000" data-en="$25k – $50k">$25 000 – $50 000</span>
+      <span class="chip" data-val="$50 000 – $100 000" data-en="$50k – $100k">$50 000 – $100 000</span>
+      <span class="chip" data-val="$100 000 – $250 000" data-en="$100k – $250k">$100 000 – $250 000</span>
+      <span class="chip" data-val="$250 000+" data-en="$250k+">$250 000+</span>
+      <span class="chip" data-val="Пока не ищу финансирование" data-en="Not seeking yet">Пока не ищу финансирование</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="На что планируете использовать средства?" data-en="What will you use the funds for?">На что планируете использовать средства?</div>
+    <div class="chip-group" data-name="funding_purpose" data-multi="true">
+      <span class="chip" data-val="Оборотный капитал" data-en="Working capital">Оборотный капитал</span>
+      <span class="chip" data-val="Оборудование" data-en="Equipment">Оборудование</span>
+      <span class="chip" data-val="Инвентарь / товар" data-en="Inventory">Инвентарь / товар</span>
+      <span class="chip" data-val="Маркетинг / реклама" data-en="Marketing">Маркетинг / реклама</span>
+      <span class="chip" data-val="Найм сотрудников" data-en="Hiring">Найм сотрудников</span>
+      <span class="chip" data-val="Недвижимость / офис" data-en="Real estate">Недвижимость / офис</span>
+      <span class="chip" data-val="Рефинансирование долга" data-en="Refinancing">Рефинансирование долга</span>
+      <span class="chip" data-val="Только кредитный профиль" data-en="Credit profile only">Только кредитный профиль</span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Вам ранее отказывали в финансировании?" data-en="Have you been denied funding before?">Вам ранее отказывали в финансировании?</div>
+    <div class="chip-group" data-name="prev_denial" data-multi="false" data-trigger="denial-detail" data-trigger-val="Да">
+      <span class="chip" data-val="Да" data-en="Yes">Да</span>
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+    </div>
+    <div class="conditional" id="denial-detail">
+      <div class="q-hint" style="margin-bottom:8px;" data-ru="Кто отказал, когда и по какой причине?" data-en="Who denied you, when, and what reason was given?">Кто отказал, когда и по какой причине?</div>
+      <textarea name="denial_reason" placeholder="Название кредитора, дата, причина отказа..."></textarea>
+    </div>
+  </div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Телефон" data-en="Phone">Телефон бизнеса <span class="req">*</span></div>
+    <div class="q-hint" data-ru="Отдельный бизнес-номер повышает доверие кредиторов к вашей компании." data-en="A separate business number increases lender confidence in your company.">Отдельный бизнес-номер повышает доверие кредиторов к вашей компании.</div>
+    <div class="chip-group" data-name="biz_phone" data-multi="false">
+      <span class="chip" data-val="Отдельная бизнес-линия" data-en="Dedicated line">Отдельная бизнес-линия</span>
+      <span class="chip" data-val="Личный телефон" data-en="Personal phone">Личный телефон</span>
+      <span class="chip" data-val="VoIP / Google Voice" data-en="VoIP / Google Voice">VoIP / Google Voice</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Тип адреса бизнеса" data-en="Business Address Type">Тип адреса бизнеса <span class="req">*</span></div>
+    <div class="q-hint" data-ru="Адрес должен совпадать с тем, что указано в регистрационных документах." data-en="Address must match what is listed on your registration documents.">Адрес должен совпадать с тем, что указано в регистрационных документах.</div>
+    <div class="chip-group" data-name="biz_address_type" data-multi="false">
+      <span class="chip" data-val="Коммерческий офис / торговая точка" data-en="Commercial office">Коммерческий офис / торговая точка</span>
+      <span class="chip" data-val="Домашний адрес" data-en="Home address">Домашний адрес</span>
+      <span class="chip" data-val="Виртуальный офис" data-en="Virtual office">Виртуальный офис</span>
+      <span class="chip" data-val="Адрес зарегистрированного агента" data-en="Registered agent address">Адрес зарегистрированного агента</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Есть ли у вас веб-сайт?" data-en="Do you have a website?">Есть ли у вас веб-сайт?</div>
+    <div class="chip-group" data-name="has_website" data-multi="false">
+      <span class="chip" data-val="Да — действующий" data-en="Yes, active">Да — действующий</span>
+      <span class="chip" data-val="Да — базовый" data-en="Yes, basic">Да — базовый</span>
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 2: REVENUE ══════════════ -->
+<div class="section" id="s2">
+  <div class="section-tag" data-ru="02 — Доходы" data-en="02 — Revenue">02 — Доходы</div>
+  <div class="section-title" data-ru="Доходы и выручка" data-en="Revenue &amp; Income">Доходы и выручка</div>
+  <div class="section-desc" data-ru="Финансовые показатели за последние 12 месяцев." data-en="Financial figures for the last 12 months.">Финансовые показатели за последние 12 месяцев.</div>
+
+  <div class="q-grid">
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Валовая годовая выручка" data-en="Annual Gross Revenue">Валовая годовая выручка <span class="req">*</span></div>
+      <div class="q-hint" data-ru="Общая сумма всех поступлений, до вычета расходов." data-en="Total amount of all income, before deducting expenses.">Общая сумма всех поступлений, до вычета расходов.</div>
+      <input type="text" name="annual_revenue" placeholder="$0">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q">
+      <div class="q-label" data-ru="Годовой чистый доход" data-en="Annual Net Income">Годовой чистый доход</div>
+      <div class="q-hint" data-ru="Что осталось после оплаты всех расходов бизнеса." data-en="What remains after paying all business expenses.">Что осталось после оплаты всех расходов бизнеса.</div>
+      <input type="text" name="net_income" placeholder="$0">
+    </div>
+  </div>
+
+  <div class="q" data-required="true">
+    <div class="q-label" data-ru="Личный годовой доход владельца" data-en="Owner's Total Annual Income">Личный годовой доход владельца <span class="req">*</span></div>
+    <div class="q-hint" data-ru="Укажите все источники: зарплата, дивиденды, выплаты из бизнеса и любые другие доходы." data-en="Include all sources: salary, dividends, business distributions, and any other income.">Укажите все источники: зарплата, дивиденды, выплаты из бизнеса и любые другие доходы.</div>
+    <input type="text" name="owner_income" placeholder="$0">
+    <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+  </div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Поданы ли налоговые декларации бизнеса?" data-en="Have you filed business tax returns?">Поданы ли налоговые декларации бизнеса? <span class="req">*</span></div>
+    <div class="q-hint" data-ru="Большинство кредиторов требуют декларации за 1–2 года для одобрения заявки." data-en="Most lenders require 1–2 years of returns to approve an application.">Большинство кредиторов требуют декларации за 1–2 года для одобрения заявки.</div>
+    <div class="chip-group" data-name="tax_returns" data-multi="false">
+      <span class="chip" data-val="Да — 2+ года" data-en="Yes, 2+ years">Да — 2+ года</span>
+      <span class="chip" data-val="Да — 1 год" data-en="Yes, 1 year">Да — 1 год</span>
+      <span class="chip" data-val="Первый год — ещё не подавал" data-en="First year, not yet filed">Первый год — ещё не подавал</span>
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Как ведётся бухгалтерия?" data-en="How is bookkeeping handled?">Как ведётся бухгалтерия?</div>
+    <div class="chip-group" data-name="bookkeeping" data-multi="false">
+      <span class="chip" data-val="ПО (QuickBooks и др.)" data-en="Software (QuickBooks, etc.)">ПО (QuickBooks и др.)</span>
+      <span class="chip" data-val="Бухгалтер" data-en="Accountant">Бухгалтер</span>
+      <span class="chip" data-val="Таблицы / неформально" data-en="Spreadsheets / informal">Таблицы / неформально</span>
+      <span class="chip" data-val="Не ведётся" data-en="Not tracked">Не ведётся</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 3: BANKING ══════════════ -->
+<div class="section" id="s3">
+  <div class="section-tag" data-ru="03 — Банк" data-en="03 — Banking">03 — Банк</div>
+  <div class="section-title" data-ru="Банковские счета" data-en="Bank Accounts">Банковские счета</div>
+  <div class="section-desc" data-ru="Банковская история — один из главных факторов при оценке кредитоспособности." data-en="Banking history is one of the top factors lenders evaluate.">Банковская история — один из главных факторов при оценке кредитоспособности.</div>
+
+  <div class="q-grid">
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Основной банк бизнеса" data-en="Primary Business Bank">Основной банк бизнеса <span class="req">*</span></div>
+      <input type="text" name="bank_name" placeholder="Например: Chase, Mercury, Wells Fargo">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Как давно открыт счёт?" data-en="How long has the account been open?">Как давно открыт счёт? <span class="req">*</span></div>
+      <div class="q-hint" data-ru="Чем старше счёт — тем лучше для одобрения кредита." data-en="The older the account, the better it looks to lenders.">Чем старше счёт — тем лучше для одобрения кредита.</div>
+      <input type="text" name="bank_age" placeholder="Например: 2 года 3 месяца">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Текущий баланс" data-en="Current Balance">Текущий баланс <span class="req">*</span></div>
+      <input type="text" name="current_balance" placeholder="$0">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Средний месячный баланс" data-en="Average Monthly Balance">Средний месячный баланс <span class="req">*</span></div>
+      <div class="q-hint" data-ru="Сумма, которая обычно остаётся на счёте — не пиковая, а типичная." data-en="The amount typically left in the account — not the peak, but the usual balance.">Сумма, которая обычно остаётся на счёте — не пиковая, а типичная.</div>
+      <input type="text" name="avg_balance" placeholder="$0">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+  </div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Овердрафты или возвраты платежей (NSF) за последние 12 месяцев?" data-en="Overdrafts or NSF returns in the last 12 months?">Овердрафты или возвраты платежей (NSF) за последние 12 месяцев? <span class="req">*</span></div>
+    <div class="q-hint" data-ru="NSF — это когда банк отклоняет платёж из-за недостатка средств на счёте." data-en="NSF is when the bank rejects a payment due to insufficient funds.">NSF — это когда банк отклоняет платёж из-за недостатка средств на счёте.</div>
+    <div class="chip-group" data-name="overdrafts" data-multi="false">
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+      <span class="chip" data-val="1–2 раза" data-en="1–2 times">1–2 раза</span>
+      <span class="chip" data-val="3–5 раз" data-en="3–5 times">3–5 раз</span>
+      <span class="chip" data-val="Более 5 раз" data-en="More than 5 times">Более 5 раз</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Другие бизнес-счета (если есть)" data-en="Other business accounts (if any)">Другие бизнес-счета (если есть)</div>
+    <div class="q-hint" data-ru="Укажите банк, примерный баланс и для чего используется счёт." data-en="List the bank, approximate balance, and purpose of the account.">Укажите банк, примерный баланс и для чего используется счёт.</div>
+    <textarea name="other_accounts" placeholder="Например: Mercury — $5 000 — резервный счёт..."></textarea>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 4: EXPENSES ══════════════ -->
+<div class="section" id="s4">
+  <div class="section-tag" data-ru="04 — Расходы" data-en="04 — Expenses">04 — Расходы</div>
+  <div class="section-title" data-ru="Расходы и обязательства" data-en="Expenses &amp; Liabilities">Расходы и обязательства</div>
+  <div class="section-desc" data-ru="Помогает рассчитать реальный денежный поток вашего бизнеса." data-en="Helps calculate your real business cash flow.">Помогает рассчитать реальный денежный поток вашего бизнеса.</div>
+
+  <div class="q-grid">
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Общие ежемесячные расходы" data-en="Total Monthly Expenses">Общие ежемесячные расходы <span class="req">*</span></div>
+      <div class="q-hint" data-ru="Всё что бизнес платит каждый месяц: аренда, зарплаты, подписки, материалы и т.д." data-en="Everything the business pays monthly: rent, payroll, subscriptions, supplies, etc.">Всё что бизнес платит каждый месяц: аренда, зарплаты, подписки, материалы и т.д.</div>
+      <input type="text" name="monthly_expenses" placeholder="$0">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q">
+      <div class="q-label" data-ru="Аренда в месяц" data-en="Monthly Rent">Аренда в месяц</div>
+      <input type="text" name="monthly_rent" placeholder="$0 (0 если работаете из дома)">
+    </div>
+    <div class="q" data-required="true">
+      <div class="q-label" data-ru="Платежи по кредитам в месяц" data-en="Monthly Loan Payments">Платежи по кредитам в месяц <span class="req">*</span></div>
+      <div class="q-hint" data-ru="Сумма всех текущих выплат по бизнес-займам и кредитам." data-en="Total of all current payments on business loans and credit lines.">Сумма всех текущих выплат по бизнес-займам и кредитам.</div>
+      <input type="text" name="loan_payments" placeholder="$0 (если нет — укажите 0)">
+      <div class="q-error" data-ru="Обязательное поле" data-en="Required field"><span data-ru="Обязательное поле" data-en="Required field">Обязательное поле</span></div>
+    </div>
+    <div class="q">
+      <div class="q-label" data-ru="Количество сотрудников" data-en="Number of Employees">Количество сотрудников</div>
+      <input type="text" name="employees" placeholder="0 если только владелец">
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Аресты, судебные решения или налоговые задолженности?" data-en="Liens, judgments, or tax debts?">Аресты, судебные решения или налоговые задолженности?</div>
+    <div class="q-hint" data-ru="Налоговый арест (tax lien) — это требование IRS на имущество за неуплату налогов." data-en="A tax lien is an IRS claim on your assets for unpaid taxes.">Налоговый арест (tax lien) — это требование IRS на имущество за неуплату налогов.</div>
+    <div class="chip-group" data-name="liens" data-multi="false" data-trigger="lien-detail" data-trigger-val="__not_none__">
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+      <span class="chip" data-val="Налоговое удержание" data-en="Tax lien">Налоговое удержание</span>
+      <span class="chip" data-val="Судебное решение" data-en="Judgment">Судебное решение</span>
+      <span class="chip" data-val="UCC-файлинг" data-en="UCC filing">UCC-файлинг</span>
+      <span class="chip" data-val="Не уверен" data-en="Not sure">Не уверен</span>
+    </div>
+    <div class="conditional" id="lien-detail">
+      <textarea name="lien_detail" placeholder="Опишите подробнее..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 5: CREDIT PRODUCTS ══════════════ -->
+<div class="section" id="s5">
+  <div class="section-tag" data-ru="05 — Кредиты" data-en="05 — Credit">05 — Кредиты</div>
+  <div class="section-title" data-ru="Бизнес-кредитные продукты" data-en="Business Credit Products">Бизнес-кредитные продукты</div>
+  <div class="section-desc" data-ru="Карты и кредитные линии, открытые на имя бизнеса." data-en="Cards and credit lines opened in the business name.">Карты и кредитные линии, открытые на имя бизнеса.</div>
+
+  <div class="q" data-required="chips">
+    <div class="q-label" data-ru="Есть ли у вас бизнес-кредитные карты или продукты?" data-en="Do you have business credit cards or products?">Есть ли у вас бизнес-кредитные карты или продукты? <span class="req">*</span></div>
+    <div class="q-hint" data-ru="Кредитные продукты на имя бизнеса — это карты, кредитные линии, флит-карты и т.д." data-en="Business credit products include cards, credit lines, fleet cards, etc.">Кредитные продукты на имя бизнеса — это карты, кредитные линии, флит-карты и т.д.</div>
+    <div class="chip-group" data-name="has_cards" data-multi="false" data-trigger="cards-section" data-trigger-val="Да">
+      <span class="chip" data-val="Да" data-en="Yes">Да</span>
+      <span class="chip" data-val="Нет" data-en="No">Нет</span>
+    </div>
+    <div class="q-error" data-ru="Выберите один вариант" data-en="Please select an option"><span data-ru="Выберите один вариант" data-en="Please select an option">Выберите один вариант</div>
+  </div>
+
+  <div class="conditional" id="cards-section">
+    <div id="cardList" class="card-list"></div>
+    <button type="button" class="add-card-btn" id="addCardBtn" onclick="addCard()">
+      <span id="addCardBtnText">+ Добавить карту / продукт</span>
+    </button>
+    <div class="card-count-note" id="cardCountNote"></div>
+    <div style="margin-top:16px;">
+      <div class="q-hint" style="margin-bottom:6px;" data-ru="Дополнительные комментарии по кредитным продуктам" data-en="Additional comments on credit products">Дополнительные комментарии по кредитным продуктам</div>
+      <textarea name="cards_notes" placeholder="Любые детали, вопросы или пояснения по вашим картам..."></textarea>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Просрочки, списания или коллекции по бизнес-счетам?" data-en="Delinquencies, charge-offs, or collections on business accounts?">Просрочки, списания или коллекции по бизнес-счетам?</div>
+    <div class="chip-group" data-name="biz_derog" data-multi="false" data-trigger="derog-detail" data-trigger-val="Да">
+      <span class="chip" data-val="Нет — чисто" data-en="No, clean">Нет — чисто</span>
+      <span class="chip" data-val="Да" data-en="Yes">Да</span>
+      <span class="chip" data-val="Не уверен" data-en="Not sure">Не уверен</span>
+    </div>
+    <div class="conditional" id="derog-detail">
+      <textarea name="derog_detail" placeholder="Кредитор, сумма, статус, давность..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 6: DOCUMENTS ══════════════ -->
+<div class="section" id="s6">
+  <div class="section-tag" data-ru="06 — Документы" data-en="06 — Documents">06 — Документы</div>
+  <div class="section-title" data-ru="Необходимые документы" data-en="Required Documents">Необходимые документы</div>
+  <div class="section-desc" data-ru="Отметьте документы, которые у вас уже есть и готовы к предоставлению." data-en="Check the documents you already have ready to provide.">Отметьте документы, которые у вас уже есть и готовы к предоставлению.</div>
+
+  <div class="doc-grid">
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_articles">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Устав / операционное соглашение LLC" data-en="Articles of Incorporation / LLC Operating Agreement">Устав / операционное соглашение LLC</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_ein">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Письмо-подтверждение EIN (CP575)" data-en="EIN Confirmation Letter (CP575)">Письмо-подтверждение EIN (CP575)</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_bank6">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Банковские выписки за 6 месяцев" data-en="Bank Statements (6 months)">Банковские выписки за 6 месяцев</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_tax2">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Налоговые декларации бизнеса (2 года)" data-en="Business Tax Returns (2 years)">Налоговые декларации бизнеса (2 года)</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_personal_tax">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Личные налоговые декларации владельца" data-en="Owner's Personal Tax Returns">Личные налоговые декларации владельца</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_pl">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Отчёт о прибылях и убытках (P&L)" data-en="Profit & Loss Statement (P&L)">Отчёт о прибылях и убытках (P&L)</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_balance">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Балансовый отчёт" data-en="Balance Sheet">Балансовый отчёт</span>
+    </div>
+    <div class="doc-item" onclick="toggleDoc(this)">
+      <input type="checkbox" name="doc_voided_check">
+      <div class="doc-check"><div class="doc-check-inner"></div></div>
+      <span class="doc-label" data-ru="Аннулированный бизнес-чек" data-en="Voided Business Check">Аннулированный бизнес-чек</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="q">
+    <div class="q-label" data-ru="Дополнительная информация" data-en="Additional Notes">Дополнительная информация</div>
+    <div class="q-hint" data-ru="Любые важные детали, предстоящие события, вопросы — что угодно, что поможет нам лучше понять вашу ситуацию." data-en="Any important details, upcoming events, or questions that help us understand your situation.">Любые важные детали, предстоящие события, вопросы — что угодно, что поможет нам лучше понять вашу ситуацию.</div>
+    <textarea name="notes" placeholder="Сезонный рост выручки, ожидается крупный контракт, недавно наняли сотрудников..."></textarea>
+  </div>
+
+  <div class="form-error" id="errorMsg" data-ru="Произошла ошибка при отправке. Попробуйте ещё раз." data-en="Submission error. Please try again.">Произошла ошибка при отправке. Попробуйте ещё раз.</div>
+</div>
+
+</form>
+
+<div class="nav" id="navBar">
+  <button class="btn btn-ghost" id="btnBack" onclick="go(-1)" style="visibility:hidden">← Назад</button>
+  <button class="btn btn-primary" id="btnNext" onclick="go(1)">
+    <span class="btn-text">Далее →</span>
+    <div class="spinner"></div>
+  </button>
+</div>
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✓</div>
+  <h2 data-ru="Анкета отправлена!" data-en="Form Submitted!">Анкета отправлена!</h2>
+  <p data-ru="Ваши данные получены. Мы свяжемся с вами в ближайшее время для обсуждения плана." data-en="Your information has been received. We will contact you shortly to discuss your plan.">Ваши данные получены. Мы свяжемся с вами в ближайшее время для обсуждения плана.</p>
+</div>
+
+</div><!-- /page-wrap -->
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqFcactFb2WTyqmsBfJIxofajjOOLtq6PmksMCpcRkp-r4-tuavrrQMnHNPKGVtXhL/exec';
 const TOTAL = 6;
 let current = 1;
+let cardCount = 0;
+const MAX_CARDS = 10;
 
-// Init progress dots
+// ── PROGRESS ──────────────────────────────────
 const stepsEl = document.getElementById('progressSteps');
 for (let i = 1; i <= TOTAL; i++) {
   const d = document.createElement('div');
@@ -902,23 +576,65 @@ for (let i = 1; i <= TOTAL; i++) {
 }
 
 function updateProgress() {
-  document.getElementById('progressLabel').innerHTML =
-    `<span>Раздел ${current} из ${TOTAL}</span>`;
+  const sectionWord = currentLang === 'en' ? 'Section' : 'Раздел';
+  const ofWord = currentLang === 'en' ? 'of' : 'из';
+  document.getElementById('progressLabel').innerHTML = `<span>${sectionWord} ${current} ${ofWord} ${TOTAL}</span>`;
   for (let i = 1; i <= TOTAL; i++) {
     const d = document.getElementById('dot' + i);
     d.className = 'progress-dot' + (i < current ? ' done' : i === current ? ' active' : '');
   }
   document.getElementById('btnBack').style.visibility = current > 1 ? 'visible' : 'hidden';
   const btn = document.getElementById('btnNext');
+  const nextLabel = currentLang === 'en' ? 'Next →' : 'Далее →';
+  const submitLabel = currentLang === 'en' ? 'Submit Form ✓' : 'Отправить анкету ✓';
+  const backLabel = currentLang === 'en' ? '← Back' : '← Назад';
   btn.innerHTML = current < TOTAL
-    ? '<span class="btn-text">Далее →</span><div class="spinner"></div>'
-    : '<span class="btn-text">Отправить анкету ✓</span><div class="spinner"></div>';
+    ? `<span class="btn-text">${nextLabel}</span><div class="spinner"></div>`
+    : `<span class="btn-text">${submitLabel}</span><div class="spinner"></div>`;
+  document.getElementById('btnBack').textContent = backLabel;
 }
 
+// ── VALIDATION ────────────────────────────────
+function validateSection(sec) {
+  const el = document.getElementById('s' + sec);
+  let ok = true;
+
+  // Text/select inputs
+  el.querySelectorAll('.q[data-required="true"]').forEach(q => {
+    const inp = q.querySelector('input, textarea, select');
+    if (!inp || !inp.value.trim()) {
+      q.classList.add('has-error');
+      ok = false;
+    } else {
+      q.classList.remove('has-error');
+    }
+  });
+
+  // Chip required
+  el.querySelectorAll('.q[data-required="chips"]').forEach(q => {
+    const group = q.querySelector('.chip-group');
+    if (!group) return;
+    const anySelected = group.querySelector('.chip.selected');
+    if (!anySelected) {
+      q.classList.add('has-error');
+      ok = false;
+    } else {
+      q.classList.remove('has-error');
+    }
+  });
+
+  return ok;
+}
+
+// ── NAVIGATION ────────────────────────────────
 function go(dir) {
-  if (dir === 1 && current === TOTAL) {
-    submitForm();
-    return;
+  if (dir === 1) {
+    if (!validateSection(current)) {
+      const firstErr = document.querySelector('#s' + current + ' .has-error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (current === TOTAL) { submitForm(); return; }
   }
   document.getElementById('s' + current).classList.remove('active');
   current = Math.max(1, Math.min(TOTAL, current + dir));
@@ -927,91 +643,338 @@ function go(dir) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Chip toggle
-document.querySelectorAll('.chips').forEach(group => {
+// ── CHIPS ─────────────────────────────────────
+document.querySelectorAll('.chip-group').forEach(group => {
   const multi = group.dataset.multi === 'true';
   const triggerId = group.dataset.trigger;
+  const triggerVal = group.dataset.triggerVal;
+
   group.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
       if (!multi) group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
       chip.classList.toggle('selected');
+
+      // Clear error on selection
+      const parentQ = group.closest('.q');
+      if (parentQ) parentQ.classList.remove('has-error');
+
+      // Conditional trigger
       if (triggerId) {
-        const el = document.getElementById(triggerId);
-        const anySelected = group.querySelector('.chip.selected');
-        const selectedVal = anySelected ? anySelected.dataset.val : '';
-        if (triggerId === 'denial-detail') {
-          el.classList.toggle('show', selectedVal === 'Да');
-        } else if (triggerId === 'cards-detail') {
-          el.classList.toggle('show', selectedVal === 'Да');
-        } else if (triggerId === 'derog-detail') {
-          el.classList.toggle('show', selectedVal === 'Да');
-        } else if (triggerId === 'lien-detail') {
-          const bad = ['Налоговое удержание','Судебное решение','UCC-файлинг'];
-          el.classList.toggle('show', bad.includes(selectedVal));
+        const condEl = document.getElementById(triggerId);
+        const selected = group.querySelector('.chip.selected');
+        const val = selected ? selected.dataset.val : '';
+        let show = false;
+        if (triggerVal === '__not_none__') {
+          show = val && val !== 'Нет';
+        } else {
+          show = val === triggerVal;
         }
+        condEl.classList.toggle('show', show);
       }
     });
   });
 });
 
-// Doc checkboxes
-function toggleDoc(label) {
-  const cb = label.querySelector('input[type=checkbox]');
-  cb.checked = !cb.checked;
-  label.classList.toggle('checked', cb.checked);
+// ── DOC CHECKBOXES ────────────────────────────
+function toggleDoc(item) {
   event.preventDefault();
+  const cb = item.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  item.classList.toggle('checked', cb.checked);
 }
 
-// Collect all form data
+// ── CREDIT CARD ROWS ──────────────────────────
+function updateCardUI() {
+  const btn = document.getElementById('addCardBtn');
+  const note = document.getElementById('cardCountNote');
+  btn.disabled = cardCount >= MAX_CARDS;
+  const L = currentLang === 'en';
+  note.textContent = cardCount > 0
+    ? (L ? `${cardCount} of ${MAX_CARDS} cards added` : `${cardCount} из ${MAX_CARDS} карт добавлено`)
+    : '';
+}
+
+function addCard() {
+  if (cardCount >= MAX_CARDS) return;
+  cardCount++;
+  const idx = cardCount;
+  const row = document.createElement('div');
+  row.className = 'card-row';
+  row.id = 'card-row-' + idx;
+  const L = currentLang === 'en';
+  row.innerHTML = `
+    <div>
+      <div class="card-row-label" data-ru="Эмитент / название" data-en="Issuer / Name">${L ? 'Issuer / Name' : 'Эмитент / название'}</div>
+      <input type="text" name="card_issuer_${idx}" placeholder="${L ? 'e.g. Chase Ink Business' : 'Например: Chase Ink Business'}">
+    </div>
+    <div>
+      <div class="card-row-label" data-ru="Кредитный лимит" data-en="Credit Limit">${L ? 'Credit Limit' : 'Кредитный лимит'}</div>
+      <input type="text" name="card_limit_${idx}" placeholder="$0">
+    </div>
+    <div>
+      <div class="card-row-label" data-ru="Текущий баланс" data-en="Current Balance">${L ? 'Current Balance' : 'Текущий баланс'}</div>
+      <input type="text" name="card_balance_${idx}" placeholder="$0">
+    </div>
+    <button type="button" class="card-remove" data-ru="✕ Удалить" data-en="✕ Remove" onclick="removeCard(${idx}, this)">${L ? '✕ Remove' : '✕ Удалить'}</button>
+  `;
+  document.getElementById('cardList').appendChild(row);
+  updateCardUI();
+}
+
+function removeCard(idx, btn) {
+  const row = document.getElementById('card-row-' + idx);
+  if (row) row.remove();
+  cardCount--;
+  updateCardUI();
+}
+
+// ── COLLECT DATA ──────────────────────────────
 function collectData() {
   const data = { timestamp: new Date().toLocaleString('ru-RU') };
 
-  // Regular inputs
-  document.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
-    if (el.type === 'checkbox') {
-      data[el.name] = el.checked ? 'Да' : 'Нет';
-    } else {
-      data[el.name] = el.value;
-    }
+  // Regular inputs + selects + textareas
+  document.querySelectorAll('input[name]:not([type=checkbox]), select[name], textarea[name]').forEach(el => {
+    if (!el.name.startsWith('card_')) data[el.name] = el.value || '—';
+  });
+
+  // Checkboxes (docs)
+  document.querySelectorAll('input[type=checkbox][name]').forEach(el => {
+    data[el.name] = el.checked ? 'Да' : 'Нет';
   });
 
   // Chip selections
-  document.querySelectorAll('.chips[data-name]').forEach(group => {
+  document.querySelectorAll('.chip-group[data-name]').forEach(group => {
     const name = group.dataset.name;
     const selected = [...group.querySelectorAll('.chip.selected')].map(c => c.dataset.val);
     data[name] = selected.join(', ') || '—';
   });
 
+  // Credit cards → single cell
+  const cardRows = document.querySelectorAll('.card-row');
+  if (cardRows.length === 0) {
+    data['credit_products'] = data['has_cards'] === 'Нет' ? 'Нет' : '—';
+  } else {
+    const lines = [];
+    cardRows.forEach((row, i) => {
+      const issuer = row.querySelector('input[name^="card_issuer"]')?.value || '—';
+      const limit = row.querySelector('input[name^="card_limit"]')?.value || '—';
+      const balance = row.querySelector('input[name^="card_balance"]')?.value || '—';
+      lines.push(`${i+1}. ${issuer} | Лимит: ${limit} | Баланс: ${balance}`);
+    });
+    data['credit_products'] = lines.join('\n');
+  }
+
   return data;
 }
 
+// ── SUBMIT ────────────────────────────────────
 async function submitForm() {
   const btn = document.getElementById('btnNext');
   btn.disabled = true;
   btn.classList.add('loading');
   document.getElementById('errorMsg').classList.remove('show');
 
-  const data = collectData();
-
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(collectData())
     });
-
     document.getElementById('mainForm').style.display = 'none';
     document.getElementById('navBar').style.display = 'none';
     document.querySelector('.progress-wrap').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
-
   } catch (err) {
     btn.disabled = false;
     btn.classList.remove('loading');
     document.getElementById('errorMsg').classList.add('show');
   }
 }
+
+
+// ── PHONE MASK ────────────────────────────────
+const phoneInput = document.getElementById('phoneInput');
+if (phoneInput) {
+  phoneInput.addEventListener('input', function(e) {
+    let v = this.value.replace(/\D/g, '');
+    if (v.length > 10) v = v.slice(0, 10);
+    let out = '';
+    if (v.length > 0) out = '(' + v.slice(0, 3);
+    if (v.length >= 4) out += ') ' + v.slice(3, 6);
+    if (v.length >= 7) out += '-' + v.slice(6, 10);
+    this.value = out;
+  });
+  phoneInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Backspace' && this.value === '') e.preventDefault();
+  });
+}
+
+// ── EIN MASK ──────────────────────────────────
+const einInput = document.getElementById('einInput');
+if (einInput) {
+  einInput.addEventListener('input', function(e) {
+    let v = this.value.replace(/\D/g, '');
+    if (v.length > 9) v = v.slice(0, 9);
+    if (v.length > 2) {
+      this.value = v.slice(0, 2) + '-' + v.slice(2);
+    } else {
+      this.value = v;
+    }
+  });
+}
+
+// ── LANGUAGE TOGGLE ───────────────────────────
+let currentLang = 'ru';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btnRU').classList.toggle('active', lang === 'ru');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+
+  // Translate all data-ru / data-en elements
+  document.querySelectorAll('[data-ru][data-en]').forEach(el => {
+    // Skip chips and doc-labels — handled separately below
+    if (el.classList.contains('chip') || el.classList.contains('doc-label')) return;
+    const val = el.getAttribute(lang === 'en' ? 'data-en' : 'data-ru');
+    if (!val) return;
+    const req = el.querySelector('.req');
+    if (req) {
+      // Label with asterisk: update only text nodes
+      el.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = val + ' '; });
+    } else if (!el.querySelector('[data-ru]')) {
+      // Leaf node — safe to replace textContent
+      el.textContent = val;
+    }
+  });
+
+  // Chips: update visible text but keep data-val (stored value) unchanged
+  document.querySelectorAll('.chip[data-en]').forEach(chip => {
+    chip.textContent = lang === 'en' ? chip.dataset.en : chip.dataset.val;
+  });
+
+  // Chips without data-en (fallback — shouldn't happen but safety net)
+  document.querySelectorAll('.chip:not([data-en])').forEach(chip => {
+    // Leave as-is
+  });
+
+  // Doc labels
+  document.querySelectorAll('.doc-label[data-ru][data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? el.dataset.en : el.dataset.ru;
+  });
+
+  // Placeholders
+  const placeholders = {
+    ru: {
+      owner_first_name: 'Имя',
+      owner_last_name: 'Фамилия',
+      owner_phone: '(000) 000-0000',
+      owner_email: 'name@email.com',
+      business_name: 'Например: ABC Logistics LLC',
+      ein: '12-3456789',
+      annual_revenue: '$0',
+      net_income: '$0',
+      owner_income: '$0',
+      bank_name: 'Например: Chase, Mercury, Wells Fargo',
+      bank_age: 'Например: 2 года 3 месяца',
+      current_balance: '$0',
+      avg_balance: '$0',
+      other_accounts: 'Например: Mercury — $5 000 — резервный счёт...',
+      monthly_expenses: '$0',
+      monthly_rent: '$0 (0 если работаете из дома)',
+      loan_payments: '$0 (если нет — укажите 0)',
+      employees: '0 если только владелец',
+      denial_reason: 'Название кредитора, дата, причина отказа...',
+      lien_detail: 'Опишите подробнее...',
+      cards_notes: 'Любые детали, вопросы или пояснения по вашим картам...',
+      derog_detail: 'Кредитор, сумма, статус, давность...',
+      notes: 'Сезонный рост выручки, ожидается крупный контракт, недавно наняли сотрудников...',
+    },
+    en: {
+      owner_first_name: 'First name',
+      owner_last_name: 'Last name',
+      owner_phone: '(000) 000-0000',
+      owner_email: 'name@email.com',
+      business_name: 'e.g. ABC Logistics LLC',
+      ein: '12-3456789',
+      annual_revenue: '$0',
+      net_income: '$0',
+      owner_income: '$0',
+      bank_name: 'e.g. Chase, Mercury, Wells Fargo',
+      bank_age: 'e.g. 2 years 3 months',
+      current_balance: '$0',
+      avg_balance: '$0',
+      other_accounts: 'e.g. Mercury — $5,000 — reserve account...',
+      monthly_expenses: '$0',
+      monthly_rent: '$0 (0 if home-based)',
+      loan_payments: '$0 (enter 0 if none)',
+      employees: '0 if owner only',
+      denial_reason: 'Lender name, date, reason for denial...',
+      lien_detail: 'Describe in detail...',
+      cards_notes: 'Any details, questions, or notes about your cards...',
+      derog_detail: 'Creditor, amount, status, how old...',
+      notes: 'Seasonal revenue spike, upcoming contract, recent hire...',
+    }
+  };
+
+  const ph = placeholders[lang];
+  Object.entries(ph).forEach(([name, text]) => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.placeholder = text;
+  });
+
+  // q-error spans
+  document.querySelectorAll('.q-error [data-ru][data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? el.dataset.en : el.dataset.ru;
+  });
+
+  // Nav buttons
+  updateProgress();
+
+  // Select options
+  document.querySelectorAll('select[name] option[data-ru][data-en]').forEach(opt => {
+    opt.textContent = lang === 'en' ? opt.dataset.en : opt.dataset.ru;
+  });
+  // Also translate the value="" default option
+  document.querySelectorAll('select option[value=""][data-ru]').forEach(opt => {
+    opt.textContent = lang === 'en' ? opt.dataset.en : opt.dataset.ru;
+  });
+
+  // Add card button text
+  const addTxt = document.getElementById('addCardBtnText');
+  if (addTxt) addTxt.textContent = lang === 'en' ? '+ Add card / product' : '+ Добавить карту / продукт';
+
+  // Re-translate already-rendered card rows
+  document.querySelectorAll('.card-row').forEach(row => {
+    row.querySelectorAll('[data-ru][data-en]').forEach(el => {
+      el.textContent = lang === 'en' ? el.dataset.en : el.dataset.ru;
+    });
+    // Also update placeholders on card issuer inputs
+    row.querySelectorAll('input[name^="card_issuer"]').forEach(inp => {
+      inp.placeholder = lang === 'en' ? 'e.g. Chase Ink Business' : 'Например: Chase Ink Business';
+    });
+  });
+
+  // Card count note
+  const note = document.getElementById('cardCountNote');
+  if (note && note.textContent) {
+    const n = cardCount;
+    note.textContent = n > 0 ? (lang === 'en' ? `${n} of ${MAX_CARDS} cards added` : `${n} из ${MAX_CARDS} карт добавлено`) : '';
+  }
+
+  // All inline q-hint with data-ru/data-en (including style= ones)
+  document.querySelectorAll('.q-hint[data-ru][data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? el.dataset.en : el.dataset.ru;
+  });
+
+  // Update page title
+  document.title = lang === 'en' ? 'AK Strategy — Client Intake Form' : 'AK Strategy — Анкета клиента';
+}
+
+// Patch updateProgress to support lang
+const _origUpdateProgress = updateProgress;
+// Override to also translate nav button text
+const _updateProgressOrig = updateProgress;
 
 updateProgress();
 </script>
