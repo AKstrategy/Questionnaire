@@ -560,7 +560,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' vie
 </div><!-- /page-wrap -->
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxnwajai2TAUEgOJAYeCRnLJY9iSN-c1RLNqKw3hvpH-7Y2eq9W5h_z1lOn4pFuL2jk/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxC3JQiiVOQ1yX_0YT9jC2Y8WNE5gSH6kNGDTgKdvH1JmX59SFLu7NDwpefa2DTHBo_/exec';
 const TOTAL = 6;
 let current = 1;
 let cardCount = 0;
@@ -774,18 +774,43 @@ async function submitForm() {
   btn.classList.add('loading');
   document.getElementById('errorMsg').classList.remove('show');
 
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(collectData())
-    });
+  const payload = collectData();
+
+  // Strategy: try JSON POST first (no-cors, works once script is deployed correctly).
+  // Fallback: send via URL params as a GET request — bypasses CORS entirely and
+  // works even if the Apps Script URL has a redirect on POST.
+  const tryFetch = async () => {
+    // Primary: POST with no-cors (opaque response — we assume success if no exception)
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' }, // text/plain avoids preflight
+        body: JSON.stringify(payload)
+      });
+      return true;
+    } catch(e) {}
+
+    // Fallback: GET with data as query param (Apps Script handles doGet too)
+    try {
+      const encoded = encodeURIComponent(JSON.stringify(payload));
+      await fetch(SCRIPT_URL + '?data=' + encoded, {
+        method: 'GET',
+        mode: 'no-cors'
+      });
+      return true;
+    } catch(e) {}
+
+    return false;
+  };
+
+  const ok = await tryFetch();
+  if (ok) {
     document.getElementById('mainForm').style.display = 'none';
     document.getElementById('navBar').style.display = 'none';
     document.querySelector('.progress-wrap').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
-  } catch (err) {
+  } else {
     btn.disabled = false;
     btn.classList.remove('loading');
     document.getElementById('errorMsg').classList.add('show');
